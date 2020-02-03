@@ -1,15 +1,9 @@
-import React from 'react';
-import {
-  StyleSheet,
-  Button,
-  Image,
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal';
+import Icon from 'react-native-vector-icons/Ionicons';
+import * as Animatable from 'react-native-animatable';
 
-import {Images} from '../../Utils/Images';
 import Colors from '../../Utils/Colors';
 
 interface IProps {
@@ -17,14 +11,21 @@ interface IProps {
 }
 
 const PermissionModal = ({isVisible}: IProps) => {
+  const AnimatedIcon = Animatable.createAnimatableComponent(Icon);
+  const [isAnimating, setIsAnimating] = useState(false);
+
   return (
     <Modal isVisible={isVisible}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Image
+          <AnimatedIcon
+            animation="swing"
+            iterationDelay={2500}
+            iterationCount="infinite"
             style={styles.image}
-            resizeMode="contain"
-            source={Images.cameraUnavailable}
+            name="md-camera"
+            size={30}
+            color="#fff"
           />
           <Text style={styles.title}>Camera Unavailable</Text>
         </View>
