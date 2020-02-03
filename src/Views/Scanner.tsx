@@ -11,9 +11,10 @@ interface IState {
 export default class Glossary extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
+    this._closeModal = this._closeModal.bind(this);
 
     this.state = {
-      isCameraAvailable: false,
+      isCameraAvailable: true,
     };
   }
 
@@ -26,13 +27,12 @@ export default class Glossary extends Component<IProps, IState> {
     check(cameraPermission)
       .then((result: string) => {
         switch (result) {
-          case RESULTS.UNAVAILABLE:
-            this.setState({isCameraAvailable: false});
-            break;
           case RESULTS.DENIED:
             request(cameraPermission).then((res: string) => {
               if (res === RESULTS.GRANTED) {
                 this.setState({isCameraAvailable: true});
+              } else if (res === RESULTS.DENIED) {
+                this.setState({isCameraAvailable: false});
               }
             });
             break;
@@ -49,10 +49,17 @@ export default class Glossary extends Component<IProps, IState> {
       });
   }
 
+  _closeModal = () => {
+    this.setState({isCameraAvailable: true});
+  };
+
   render() {
     return (
       <View>
-        <PermissionModal isVisible={this.state.isCameraAvailable} />
+        <PermissionModal
+          isVisible={!this.state.isCameraAvailable}
+          closeModal={this._closeModal}
+        />
         {this.state.isCameraAvailable && (
           <View>
             <Text>Scanner</Text>

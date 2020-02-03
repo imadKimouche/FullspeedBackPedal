@@ -1,18 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Animatable from 'react-native-animatable';
+import {openSettings} from 'react-native-permissions';
 
 import Colors from '../../Utils/Colors';
 
 interface IProps {
   isVisible: boolean;
+  closeModal: () => void;
 }
 
-const PermissionModal = ({isVisible}: IProps) => {
+const PermissionModal = ({isVisible, closeModal}: IProps) => {
   const AnimatedIcon = Animatable.createAnimatableComponent(Icon);
-  const [isAnimating, setIsAnimating] = useState(false);
+
+  const openParam = () => {
+    openSettings().catch(() => console.warn('cannot open settings'));
+  };
 
   return (
     <Modal isVisible={isVisible}>
@@ -35,14 +40,10 @@ const PermissionModal = ({isVisible}: IProps) => {
           </Text>
         </View>
         <View style={styles.footer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => console.log('close')}>
+          <TouchableOpacity style={styles.button} onPress={() => closeModal()}>
             <Text>{'CLOSE'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => console.log('param')}>
+          <TouchableOpacity style={styles.button} onPress={() => openParam()}>
             <Text>{'PARAMETERS'}</Text>
           </TouchableOpacity>
         </View>
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
     borderRadius: 10,
-    maxHeight: '35%',
+    maxHeight: '33%',
   },
   header: {
     flex: 1,
