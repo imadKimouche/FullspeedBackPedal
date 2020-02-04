@@ -1,0 +1,28 @@
+import React from 'react';
+import {View, StyleSheet, ActivityIndicator} from 'react-native';
+import Colors from '../Utils/Colors';
+
+interface IProps {
+  animating: boolean;
+}
+
+const ProgressCircle = ({animating}: IProps) => {
+  return (
+    <View style={styles.container}>
+      <ActivityIndicator
+        size={80}
+        color={Colors.primary}
+        animating={animating}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    bottom: 0,
+  },
+});
+
+export default ProgressCircle;

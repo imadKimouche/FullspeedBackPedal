@@ -1,20 +1,35 @@
 import React, {Component} from 'react';
-import {View, Text, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import {RNCamera} from 'react-native-camera';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import PermissionModal from '../Components/Scanner/PermissionModal';
+import Colors from '../Utils/Colors';
+import ProgressCircle from '../Components/ProgressCircle';
 
 interface IProps {}
 interface IState {
   isCameraAvailable: boolean;
+  isTakingPicture: boolean;
 }
 
-export default class Glossary extends Component<IProps, IState> {
+export default class Scanner extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this._closeModal = this._closeModal.bind(this);
+    this._takePicture = this._takePicture.bind(this);
 
     this.state = {
       isCameraAvailable: true,
+      isTakingPicture: false,
     };
   }
 
@@ -53,19 +68,73 @@ export default class Glossary extends Component<IProps, IState> {
     this.setState({isCameraAvailable: true});
   };
 
+  _takePicture = async () => {
+    if (this.camera) {
+      this.setState({isTakingPicture: true});
+      const options = {quality: 0.5, base64: true};
+      const data = await this.camera.takePictureAsync(options);
+      console.log(data.uri);
+    }
+  };
+
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <PermissionModal
           isVisible={!this.state.isCameraAvailable}
           closeModal={this._closeModal}
         />
         {this.state.isCameraAvailable && (
-          <View>
-            <Text>Scanner</Text>
+          <View style={styles.cameraContainer}>
+            <RNCamera
+              ref={ref => {
+                this.camera = ref;
+              }}
+              style={styles.preview}
+              captureAudio={false}>
+              <ProgressCircle animating={this.state.isTakingPicture} />
+              <TouchableOpacity
+                style={styles.snapButton}
+                onPress={() => {
+                  this._takePicture().then(() =>
+                    this.setState({isTakingPicture: false}),
+                  );
+                }}>
+                <Icon name="md-camera" size={23} />
+              </TouchableOpacity>
+            </RNCamera>
           </View>
         )}
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'black',
+  },
+  cameraContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'black',
+  },
+  preview: {
+    flex: 1,
+    backgroundColor: 'black',
+    alignItems: 'center',
+  },
+  snapButton: {
+    backgroundColor: '#fefffa',
+    position: 'absolute',
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    marginBottom: 10,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
