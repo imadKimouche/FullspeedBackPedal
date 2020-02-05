@@ -1,31 +1,38 @@
 import React, {Component} from 'react';
 import {
   View,
-  Text,
   Platform,
   StyleSheet,
   TouchableOpacity,
-  ImageBackground,
+  Alert,
 } from 'react-native';
 import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 import {RNCamera} from 'react-native-camera';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {withNavigationFocus, NavigationScreenProp} from 'react-navigation';
 
 import PermissionModal from '../Components/Scanner/PermissionModal';
 import Colors from '../Utils/Colors';
 import ProgressCircle from '../Components/ProgressCircle';
 
-interface IProps {}
+interface IProps {
+  isFocused: boolean;
+  navigation: NavigationScreenProp<any, any>;
+}
 interface IState {
   isCameraAvailable: boolean;
   isTakingPicture: boolean;
 }
 
-export default class Scanner extends Component<IProps, IState> {
+class Scanner extends Component<IProps, IState> {
+  private camera: any;
+
   constructor(props: IProps) {
     super(props);
     this._closeModal = this._closeModal.bind(this);
     this._takePicture = this._takePicture.bind(this);
+    this._handleCapturedImage = this._handleCapturedImage.bind(this);
+    this.camera = null;
 
     this.state = {
       isCameraAvailable: true,
@@ -71,20 +78,28 @@ export default class Scanner extends Component<IProps, IState> {
   _takePicture = async () => {
     if (this.camera) {
       this.setState({isTakingPicture: true});
-      const options = {quality: 0.5, base64: true};
-      const data = await this.camera.takePictureAsync(options);
-      console.log(data.uri);
+      const options = {quality: 1};
+      await this.camera.takePictureAsync(options);
+    } else {
+      console.log('there was an error');
     }
   };
 
+  _handleCapturedImage = () => {
+    this.setState({isTakingPicture: false});
+    this.props.navigation.navigate('ImagePreview');
+  };
+
   render() {
+    const {isFocused} = this.props;
+
     return (
       <View style={styles.container}>
         <PermissionModal
           isVisible={!this.state.isCameraAvailable}
           closeModal={this._closeModal}
         />
-        {this.state.isCameraAvailable && (
+        {this.state.isCameraAvailable && isFocused && (
           <View style={styles.cameraContainer}>
             <RNCamera
               ref={ref => {
@@ -96,9 +111,16 @@ export default class Scanner extends Component<IProps, IState> {
               <TouchableOpacity
                 style={styles.snapButton}
                 onPress={() => {
-                  this._takePicture().then(() =>
-                    this.setState({isTakingPicture: false}),
-                  );
+                  this._takePicture()
+                    .then(() => this._handleCapturedImage())
+                    .catch(err => {
+                      console.log(err);
+                      this.setState({isTakingPicture: false});
+                      Alert.alert(
+                        'An Error Ocurred',
+                        'There was a problem with the camera. Could not take the picture',
+                      );
+                    });
                 }}>
                 <Icon name="md-camera" size={23} />
               </TouchableOpacity>
@@ -138,3 +160,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+export default withNavigationFocus(Scanner);
