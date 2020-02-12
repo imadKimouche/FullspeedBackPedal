@@ -8,13 +8,12 @@ interface IProps {
 
 const ProgressCircle = ({animating}: IProps) => {
   return (
-    <View style={styles.container}>
-      <ActivityIndicator
-        size={80}
-        color={Colors.primary}
-        animating={animating}
-      />
-    </View>
+    <ActivityIndicator
+      style={styles.container}
+      size={80}
+      color={Colors.primary}
+      animating={animating}
+    />
   );
 };
 

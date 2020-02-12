@@ -32,6 +32,7 @@ class Scanner extends Component<IProps, IState> {
     this._closeModal = this._closeModal.bind(this);
     this._takePicture = this._takePicture.bind(this);
     this._handleCapturedImage = this._handleCapturedImage.bind(this);
+    this._handleCaptureError = this._handleCaptureError.bind(this);
     this.camera = null;
 
     this.state = {
@@ -79,15 +80,25 @@ class Scanner extends Component<IProps, IState> {
     if (this.camera) {
       this.setState({isTakingPicture: true});
       const options = {quality: 1};
-      await this.camera.takePictureAsync(options);
+      const data = await this.camera.takePictureAsync(options);
+      return data.uri;
     } else {
       console.log('there was an error');
     }
   };
 
-  _handleCapturedImage = () => {
+  _handleCapturedImage = (uri: string) => {
     this.setState({isTakingPicture: false});
-    this.props.navigation.navigate('ImagePreview');
+    this.props.navigation.navigate('ImagePreview', {uri: uri});
+  };
+
+  _handleCaptureError = (error: string) => {
+    console.log(error);
+    this.setState({isTakingPicture: false});
+    Alert.alert(
+      'An Error Ocurred',
+      'There was a problem with the camera. Could not take the picture',
+    );
   };
 
   render() {
@@ -112,15 +123,8 @@ class Scanner extends Component<IProps, IState> {
                 style={styles.snapButton}
                 onPress={() => {
                   this._takePicture()
-                    .then(() => this._handleCapturedImage())
-                    .catch(err => {
-                      console.log(err);
-                      this.setState({isTakingPicture: false});
-                      Alert.alert(
-                        'An Error Ocurred',
-                        'There was a problem with the camera. Could not take the picture',
-                      );
-                    });
+                    .then(uri => this._handleCapturedImage(uri))
+                    .catch(err => this._handleCaptureError(err));
                 }}>
                 <Icon name="md-camera" size={23} />
               </TouchableOpacity>
@@ -136,16 +140,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'black',
+    backgroundColor: Colors.black,
   },
   cameraContainer: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'black',
+    backgroundColor: Colors.black,
   },
   preview: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: Colors.black,
     alignItems: 'center',
   },
   snapButton: {

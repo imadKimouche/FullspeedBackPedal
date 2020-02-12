@@ -15,6 +15,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 import Glossary from './Views/Glossary';
 import Scanner from './Views/Scanner';
 import Account from './Views/Account';
+import ImagePreview from './Views/ImagePreview';
 
 const ScannerNavigator = createStackNavigator({
   Scanner: {
@@ -24,7 +25,7 @@ const ScannerNavigator = createStackNavigator({
     },
   },
   ImagePreview: {
-    screen: Glossary,
+    screen: ImagePreview,
     navigationOptions: {
       header: () => null,
     },
