@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
-  ViewStyle,
-} from 'react-native';
+import {StyleSheet, TouchableOpacity, ImageBackground} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {NavigationScreenProp} from 'react-navigation';
 import * as Animatable from 'react-native-animatable';
@@ -16,28 +11,54 @@ interface IProps {
 }
 
 interface IState {
-  scanButtonAnimation: boolean;
+  loading: boolean;
+  dataSource: any;
 }
 
 export default class ImagePreview extends React.Component<IProps, IState> {
+  uri: string = '';
+  API_URL: string = 'https://safe-anchorage-52970.herokuapp.com';
+
   constructor(props: IProps) {
     super(props);
 
+    this.uri = this.props.navigation.state.params.uri;
     this.state = {
-      scanButtonAnimation: false,
+      loading: false,
+      dataSource: {},
     };
   }
 
-  _scanPicture = () => {
-    this.setState({scanButtonAnimation: true});
+  _handleResponse = (response: Response) => {
+    response
+      .json()
+      .then(responseJson => {
+        this.setState({loading: false, dataSource: {responseJson}});
+      })
+      .catch(err => {
+        this.setState({loading: false});
+        console.log(err);
+      });
+  };
+
+  _scanPicture = async () => {
+    this.setState({loading: true});
+    let RNFS = require('react-native-fs');
+    const base64 = await RNFS.readFile(this.uri, 'base64');
+
+    fetch(this.API_URL + '/api/predict', {
+      method: 'POST',
+      body: JSON.stringify({
+        base64: base64,
+      }),
+    }).then(response => this._handleResponse(response));
   };
 
   render() {
-    const {uri} = this.props.navigation.state.params;
     const AnimatedIcon = Animatable.createAnimatableComponent(Icon);
 
     return (
-      <ImageBackground style={styles.container} source={{uri: uri}}>
+      <ImageBackground style={styles.container} source={{uri: this.uri}}>
         <TouchableOpacity
           style={styles.icon}
           onPress={() => this.props.navigation.goBack()}>
@@ -47,7 +68,7 @@ export default class ImagePreview extends React.Component<IProps, IState> {
           style={styles.scanButton}
           onPress={() => this._scanPicture()}>
           <AnimatedIcon
-            animation={this.state.scanButtonAnimation ? 'tada' : ''}
+            animation={this.state.loading ? 'tada' : ''}
             iterationDelay={100}
             iterationCount="infinite"
             name="md-bug"
