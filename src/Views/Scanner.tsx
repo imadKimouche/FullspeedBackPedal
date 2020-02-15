@@ -24,6 +24,11 @@ interface IState {
   isTakingPicture: boolean;
 }
 
+interface IResult {
+  uri: string;
+  base64: string;
+}
+
 class Scanner extends Component<IProps, IState> {
   private camera: any;
 
@@ -76,20 +81,21 @@ class Scanner extends Component<IProps, IState> {
     this.setState({isCameraAvailable: true});
   };
 
-  _takePicture = async () => {
+  _takePicture = async (): Promise<IResult> => {
     if (this.camera) {
       this.setState({isTakingPicture: true});
-      const options = {quality: 1};
+      const options = {quality: 0.1, base64: true};
       const data = await this.camera.takePictureAsync(options);
-      return data.uri;
+      return {uri: data.uri, base64: data.base64};
     } else {
       console.log('there was an error');
+      return {uri: '', base64: ''};
     }
   };
 
-  _handleCapturedImage = (uri: string) => {
+  _handleCapturedImage = (uri: string, base64: string) => {
     this.setState({isTakingPicture: false});
-    this.props.navigation.navigate('ImagePreview', {uri: uri});
+    this.props.navigation.navigate('ImagePreview', {uri: uri, base64: base64});
   };
 
   _handleCaptureError = (error: string) => {
@@ -123,7 +129,9 @@ class Scanner extends Component<IProps, IState> {
                 style={styles.snapButton}
                 onPress={() => {
                   this._takePicture()
-                    .then(uri => this._handleCapturedImage(uri))
+                    .then((res: IResult) =>
+                      this._handleCapturedImage(res.uri, res.base64),
+                    )
                     .catch(err => this._handleCaptureError(err));
                 }}>
                 <Icon name="md-camera" size={23} />
@@ -158,8 +166,7 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
     borderRadius: 30,
-    marginBottom: 10,
-    bottom: 0,
+    bottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {NavigationScreenProp} from 'react-navigation';
 import * as Animatable from 'react-native-animatable';
 
+import ProgressCircle from '../Components/ProgressCircle';
 import Colors from '../Utils/Colors';
 
 interface IProps {
@@ -17,12 +18,14 @@ interface IState {
 
 export default class ImagePreview extends React.Component<IProps, IState> {
   uri: string = '';
+  base64: string = '';
   API_URL: string = 'https://safe-anchorage-52970.herokuapp.com';
 
   constructor(props: IProps) {
     super(props);
 
     this.uri = this.props.navigation.state.params.uri;
+    this.base64 = this.props.navigation.state.params.base64;
     this.state = {
       loading: false,
       dataSource: {},
@@ -34,6 +37,7 @@ export default class ImagePreview extends React.Component<IProps, IState> {
       .json()
       .then(responseJson => {
         this.setState({loading: false, dataSource: {responseJson}});
+        this.props.navigation.navigate('ScanResult', {response: responseJson});
       })
       .catch(err => {
         this.setState({loading: false});
@@ -43,13 +47,14 @@ export default class ImagePreview extends React.Component<IProps, IState> {
 
   _scanPicture = async () => {
     this.setState({loading: true});
-    let RNFS = require('react-native-fs');
-    const base64 = await RNFS.readFile(this.uri, 'base64');
-
+    console.log('Clicking....');
     fetch(this.API_URL + '/api/predict', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        base64: base64,
+        base64: this.base64,
       }),
     }).then(response => this._handleResponse(response));
   };
@@ -64,6 +69,7 @@ export default class ImagePreview extends React.Component<IProps, IState> {
           onPress={() => this.props.navigation.goBack()}>
           <Icon name="md-arrow-back" size={28} color={Colors.primary} />
         </TouchableOpacity>
+        <ProgressCircle animating={this.state.loading} />
         <TouchableOpacity
           style={styles.scanButton}
           onPress={() => this._scanPicture()}>
@@ -73,7 +79,7 @@ export default class ImagePreview extends React.Component<IProps, IState> {
             iterationCount="infinite"
             name="md-bug"
             size={23}
-            color={Colors.pink}
+            color={this.state.loading ? Colors.pink : Colors.black}
           />
         </TouchableOpacity>
       </ImageBackground>
@@ -98,8 +104,7 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
     borderRadius: 30,
-    marginBottom: 10,
-    bottom: 0,
+    bottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
