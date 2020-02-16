@@ -1,24 +1,21 @@
 
-import {createStackNavigator} from 'react-navigation-stack';
-import { createAppContainer } from 'react-navigation';
+import React from 'react';
+import { RootState } from '../store/configureStore';
 import Login from '../Views/Login';
 import HomeNavigator from './HomeNavigator';
+import { connect } from 'react-redux';
 
-const LoginNavigatorContent = createStackNavigator({
-    Login: {
-      screen: Login,
-      navigationOptions: {
-        header: () => null,
-      },
-    },
-    MainNavigation: {
-      screen: HomeNavigator,
-      navigationOptions: {
-        header: () => null,
-      },
-    },
-  });
+const LoginNavigator = (props : {isLogged?: boolean}) => {
+  console.log(props.isLogged)
+  return (!props.isLogged) ?  <Login/> : <HomeNavigator/>
+}
 
-const LoginNavigator = createAppContainer(LoginNavigatorContent);
+const mapStateToProps = function(state : RootState) {
+  return {
+    isLogged: (state.userReducer.token == "") ? false : true,
+  }
+}
 
-export default LoginNavigator;
+const LoginNavigatorConnected = connect(mapStateToProps, null)(LoginNavigator)
+
+export default LoginNavigatorConnected;

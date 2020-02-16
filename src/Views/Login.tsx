@@ -1,34 +1,22 @@
 import React, {Component} from 'react';
 import {
   Alert,
-  LayoutAnimation,
-  TouchableOpacity,
-  Dimensions,
-  Image,
-  UIManager,
   KeyboardAvoidingView,
   StyleSheet,
   ScrollView,
   Text,
   View,
 } from 'react-native';
-import {Input, Button, Icon} from 'react-native-elements';
-import {withNavigationFocus, NavigationScreenProp} from 'react-navigation';
-
-UIManager.setLayoutAnimationEnabledExperimental &&
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-
-interface IProps {
-  isFocused: boolean;
-  navigation: NavigationScreenProp<any, any>;
-}
+import { connect } from 'react-redux';
+import { Input, Button } from 'react-native-elements';
+import { Store, RootState } from '../store/configureStore';
+import { userToken } from '../store/actions/userActions';
+import FormInput from '../Components/FormInput';
+import { SCREEN_HEIGHT, SCREEN_WIDTH, IS_DEBUG } from '../Utils/Utility';
+import API from '../Utils/API'
 
 interface IState {
   isLoading: boolean;
-  selectedType: null;
   username: string;
   email: string;
   password: string;
@@ -39,7 +27,7 @@ interface IState {
   confirmationPasswordValid: boolean;
 }
 
-class Login extends Component<IProps, IState> {
+class Login extends Component<null, IState> {
   private usernameInput: React.RefObject<Input>;
   private emailInput: React.RefObject<Input>;
   private passwordInput: React.RefObject<Input>;
@@ -47,7 +35,6 @@ class Login extends Component<IProps, IState> {
 
   state: IState = {
     isLoading: false,
-    selectedType: null,
     username: '',
     email: '',
     password: '',
@@ -66,79 +53,68 @@ class Login extends Component<IProps, IState> {
     this.confirmationPasswordInput = React.createRef();
   }
 
-  signup = () => {
-    LayoutAnimation.easeInEaseOut();
-    const usernameValid = this.validateUsername();
-    const emailValid = this.validateEmail();
-    const passwordValid = this.validatePassword();
-    const confirmationPasswordValid = this.validateConfirmationPassword();
-    if (true) {
-      // emailValid &&
-      // passwordValid &&
-      // confirmationPasswordValid &&
-      // usernameValid
-      this.setState({isLoading: true});
-      setTimeout(() => {
-        LayoutAnimation.easeInEaseOut();
-        this.setState({isLoading: false});
-        this.props.navigation.navigate('Glossary');
-      }, 1500);
+  register = () => {
+    const { email, password } = this.state;
+    if (IS_DEBUG || (this.validateUsername()
+        && this.validateEmail()
+        && this.validatePassword()
+        && this.validateConfirmationPassword())) {
+      this.setState({ isLoading: true });
+      API.post(`${API.url_register}`, {email, password})
+      .then(response => {
+        if (response.status >= 200 && response.status < 300) {
+          Store.dispatch(userToken({ token: "token"}));
+        }
+        this.setState({ isLoading: false });
+    })
+    .catch(err => {
+      this.setState({ isLoading: false });
+      return err;
+    });
+    }
+  };
+
+  login = () => {
+    const { email, password } = this.state;
+    if (IS_DEBUG || (this.validateUsername()
+        && this.validateEmail()
+        && this.validatePassword()
+        && this.validateConfirmationPassword())) {
+      this.setState({ isLoading: true });
     }
   };
 
   validateUsername = () => {
-    const {username} = this.state;
+    const { username } = this.state;
     const usernameValid = username.length > 0;
-    LayoutAnimation.easeInEaseOut();
-    this.setState({usernameValid});
-    if (usernameValid && this.usernameInput.current != null)
-      this.usernameInput.current.shake();
+    this.setState({ usernameValid });
     return usernameValid;
   };
 
   validateEmail = () => {
-    const {email} = this.state;
+    const { email } = this.state;
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const emailValid = re.test(email);
-    LayoutAnimation.easeInEaseOut();
-    this.setState({emailValid});
-    if (emailValid && this.emailInput.current != null)
-      this.emailInput.current.shake();
+    this.setState({ emailValid });
     return emailValid;
   };
 
   validatePassword = () => {
-    const {password} = this.state;
-    const passwordValid = password.length >= 8;
-    LayoutAnimation.easeInEaseOut();
-    this.setState({passwordValid});
-    if (passwordValid && this.passwordInput.current != null)
-      this.passwordInput.current.shake();
+    const { password } = this.state;
+    const passwordValid = password.length >= 1;
+    this.setState({ passwordValid });
     return passwordValid;
   };
 
   validateConfirmationPassword = () => {
-    const {password, confirmationPassword} = this.state;
+    const { password, confirmationPassword } = this.state;
     const confirmationPasswordValid = password === confirmationPassword;
-    LayoutAnimation.easeInEaseOut();
-    this.setState({confirmationPasswordValid});
-    if (
-      confirmationPasswordValid &&
-      this.confirmationPasswordInput.current != null
-    )
-      this.confirmationPasswordInput.current.shake();
     return confirmationPasswordValid;
-  };
-
-  setSelectedType = (selectedType: any) => {
-    LayoutAnimation.easeInEaseOut();
-    this.setState({selectedType});
   };
 
   render() {
     const {
       isLoading,
-      selectedType,
       confirmationPassword,
       email,
       emailValid,
@@ -229,7 +205,7 @@ class Login extends Component<IProps, IState> {
               returnKeyType="go"
               onSubmitEditing={() => {
                 this.validateConfirmationPassword();
-                this.signup();
+                this.register();
               }}
             />
           </View>
@@ -239,7 +215,7 @@ class Login extends Component<IProps, IState> {
             containerStyle={{flex: -1}}
             buttonStyle={styles.signUpButton}
             titleStyle={styles.signUpButtonText}
-            onPress={this.signup}
+            onPress={this.register}
             disabled={isLoading}
           />
         </KeyboardAvoidingView>
@@ -261,51 +237,18 @@ class Login extends Component<IProps, IState> {
   }
 }
 
-export const UserTypeItem = (props: any) => {
-  const {image, label, labelColor, selected, ...attributes} = props;
-  return (
-    <TouchableOpacity {...attributes}>
-      <View
-        style={[
-          styles.userTypeItemContainer,
-          selected && styles.userTypeItemContainerSelected,
-        ]}>
-        <Text style={[styles.userTypeLabel, {color: labelColor}]}>{label}</Text>
-        <Image
-          source={image}
-          style={[
-            styles.userTypeMugshot,
-            selected && styles.userTypeMugshotSelected,
-          ]}
-        />
-      </View>
-    </TouchableOpacity>
-  );
-};
+const mapStateToProps = function(state : RootState) {
+  return {
+    isLoading: (state.userReducer.token === "") ? false : true,
+  }
+}
 
-export const FormInput = (props: any) => {
-  const {icon, refInput, ...otherProps} = props;
-  return (
-    <Input
-      {...otherProps}
-      ref={refInput}
-      inputContainerStyle={styles.inputContainer}
-      leftIcon={
-        <Icon name={icon} type={'simple-line-icon'} color="#7384B4" size={18} />
-      }
-      inputStyle={styles.inputStyle}
-      autoFocus={false}
-      autoCapitalize="none"
-      keyboardAppearance="dark"
-      errorStyle={styles.errorInputStyle}
-      autoCorrect={false}
-      blurOnSubmit={false}
-      placeholderTextColor="#7384B4"
-    />
-  );
-};
+const ConnectLogin = connect(
+  mapStateToProps,
+  null
+)(Login)
 
-export default withNavigationFocus(Login);
+export default ConnectLogin;
 
 const styles = StyleSheet.create({
   container: {
@@ -332,54 +275,6 @@ const styles = StyleSheet.create({
     color: '#7384B4',
     fontFamily: 'UbuntuBold',
     fontSize: 14,
-  },
-  userTypesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: SCREEN_WIDTH,
-    alignItems: 'center',
-  },
-  userTypeItemContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 0.5,
-  },
-  userTypeItemContainerSelected: {
-    opacity: 1,
-  },
-  userTypeMugshot: {
-    margin: 4,
-    height: 70,
-    width: 70,
-  },
-  userTypeMugshotSelected: {
-    height: 100,
-    width: 100,
-  },
-  userTypeLabel: {
-    color: 'yellow',
-    fontFamily: 'UbuntuBold',
-    fontSize: 11,
-  },
-  inputContainer: {
-    paddingLeft: 8,
-    borderRadius: 40,
-    borderWidth: 1,
-    borderColor: 'rgba(110, 120, 170, 1)',
-    height: 45,
-    marginVertical: 10,
-  },
-  inputStyle: {
-    flex: 1,
-    marginLeft: 10,
-    color: 'white',
-    fontFamily: 'UbuntuLight',
-    fontSize: 16,
-  },
-  errorInputStyle: {
-    marginTop: 0,
-    textAlign: 'center',
-    color: '#F44336',
   },
   signUpButtonText: {
     fontFamily: 'UbuntuBold',
