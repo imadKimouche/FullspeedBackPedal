@@ -13,41 +13,42 @@ import { Store, RootState } from '../store/configureStore';
 import { userToken } from '../store/actions/userActions';
 import FormInput from '../Components/FormInput';
 import { SCREEN_HEIGHT, SCREEN_WIDTH, IS_DEBUG } from '../Utils/Utility';
-import API from '../Utils/API'
+import { API, LoginType } from '../Utils/API'
 
 interface IState {
+  register: boolean;
   isLoading: boolean;
-  username: string;
+  apiResponce: string;
   email: string;
   password: string;
   confirmationPassword: string;
   emailValid: boolean;
   passwordValid: boolean;
-  usernameValid: boolean;
   confirmationPasswordValid: boolean;
 }
 
+
+const SWAGG_SENTENCES : string[] = ["Get stung ? It will be fine.", "Stay calm, if you are going to die in the next 10 min it's already too late anyway.", "At least mosquito like you."];
+
 class Login extends Component<null, IState> {
-  private usernameInput: React.RefObject<Input>;
   private emailInput: React.RefObject<Input>;
   private passwordInput: React.RefObject<Input>;
   private confirmationPasswordInput: React.RefObject<Input>;
 
   state: IState = {
+    register: true,
     isLoading: false,
-    username: '',
+    apiResponce: '',
     email: '',
     password: '',
     confirmationPassword: '',
     emailValid: true,
     passwordValid: true,
-    usernameValid: true,
     confirmationPasswordValid: true,
   };
 
   constructor(props: any) {
     super(props);
-    this.usernameInput = React.createRef();
     this.emailInput = React.createRef();
     this.passwordInput = React.createRef();
     this.confirmationPasswordInput = React.createRef();
@@ -55,74 +56,77 @@ class Login extends Component<null, IState> {
 
   register = () => {
     const { email, password } = this.state;
-    if (IS_DEBUG || (this.validateUsername()
-        && this.validateEmail()
+    if (IS_DEBUG || (this.validateEmail()
         && this.validatePassword()
         && this.validateConfirmationPassword())) {
       this.setState({ isLoading: true });
       API.post(`${API.url_register}`, {email, password})
-      .then(response => {
-        if (response.status >= 200 && response.status < 300) {
-          Store.dispatch(userToken({ token: "token"}));
-        }
-        this.setState({ isLoading: false });
-    })
-    .catch(err => {
-      this.setState({ isLoading: false });
-      return err;
-    });
+      .then((response:Response) => this._apiResponse(response))
+      .catch(err => {
+        this.setState({ isLoading: false, apiResponce: "Can't connect to API" });
+        return err;
+      });
     }
   };
 
   login = () => {
     const { email, password } = this.state;
-    if (IS_DEBUG || (this.validateUsername()
-        && this.validateEmail()
-        && this.validatePassword()
-        && this.validateConfirmationPassword())) {
+    if (IS_DEBUG || (this.validateEmail()
+        && this.validatePassword())) {
       this.setState({ isLoading: true });
+      API.post(`${API.url_login}`, {email, password})
+      .then((response:Response) => this._apiResponse(response))
+      .catch(err => {
+        this.setState({ isLoading: false, apiResponce: "Can't connect to API"});
+        return err;
+      });
     }
   };
 
-  validateUsername = () => {
-    const { username } = this.state;
-    const usernameValid = username.length > 0;
-    this.setState({ usernameValid });
-    return usernameValid;
-  };
+  _apiResponse = (response: Response) => {
+    response.json().then((responseJSON : LoginType) => {
+      if (response.status >= 200 && response.status < 300 && responseJSON.token != null) {
+        Store.dispatch(userToken({ token: responseJSON.token}));
+        this.setState({ isLoading: false});
+      } else {
+        this.setState({ isLoading: false, apiResponce: responseJSON.message ? responseJSON.message : "" });
+      }
+    })
+  }
 
   validateEmail = () => {
     const { email } = this.state;
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const emailValid = re.test(email);
-    this.setState({ emailValid });
+    this.setState({ emailValid, apiResponce: "" });
     return emailValid;
   };
 
   validatePassword = () => {
     const { password } = this.state;
     const passwordValid = password.length >= 1;
-    this.setState({ passwordValid });
+    this.setState({ passwordValid, apiResponce: "" });
     return passwordValid;
   };
 
   validateConfirmationPassword = () => {
     const { password, confirmationPassword } = this.state;
     const confirmationPasswordValid = password === confirmationPassword;
+    this.setState({ apiResponce: "" });
     return confirmationPasswordValid;
   };
 
   render() {
     const {
       isLoading,
+      register,
+      apiResponce,
       confirmationPassword,
       email,
       emailValid,
       password,
       passwordValid,
       confirmationPasswordValid,
-      username,
-      usernameValid,
     } = this.state;
 
     return (
@@ -132,26 +136,10 @@ class Login extends Component<null, IState> {
         <KeyboardAvoidingView
           behavior="position"
           contentContainerStyle={styles.formContainer}>
-          <Text style={styles.signUpText}>Sign up</Text>
-          <Text style={styles.whoAreYouText}>WHO YOU ARE ?</Text>
-
-          <View style={{width: '80%', alignItems: 'center'}}>
-            <FormInput
-              refInput={(input: any) => (this.usernameInput = input)}
-              icon="user"
-              value={username}
-              onChangeText={(username: string) => this.setState({username})}
-              placeholder="Username"
-              returnKeyType="next"
-              errorMessage={
-                usernameValid ? null : "Your username can't be blank"
-              }
-              onSubmitEditing={() => {
-                this.validateUsername();
-                if (this.emailInput.current != null)
-                  this.emailInput.current.focus();
-              }}
-            />
+          <Text style={styles.signUpText}>{register ? "Sign up" : "Login"}</Text>
+          <Text style={styles.swaggSentence}>{SWAGG_SENTENCES[Math.floor(Math.random() * SWAGG_SENTENCES.length)]}</Text>
+          <Text style={styles.apiError}>{apiResponce}</Text>
+          <View style={{width: '80%', alignItems: 'center', height: '30%'}}>
             <FormInput
               refInput={(input: any) => (this.emailInput = input)}
               icon="envelope"
@@ -186,50 +174,50 @@ class Login extends Component<null, IState> {
                   this.confirmationPasswordInput.current.focus();
               }}
             />
-            <FormInput
-              refInput={(input: any) =>
-                (this.confirmationPasswordInput = input)
-              }
-              icon="lock"
-              value={confirmationPassword}
-              onChangeText={(confirmationPassword: string) =>
-                this.setState({confirmationPassword})
-              }
-              placeholder="Confirm Password"
-              secureTextEntry
-              errorMessage={
-                confirmationPasswordValid
-                  ? null
-                  : 'The password fields are not identics'
-              }
-              returnKeyType="go"
-              onSubmitEditing={() => {
-                this.validateConfirmationPassword();
-                this.register();
-              }}
-            />
+            { register === true && <FormInput
+                refInput={(input: any) =>
+                  (this.confirmationPasswordInput = input)
+                }
+                icon="lock"
+                value={confirmationPassword}
+                onChangeText={(confirmationPassword: string) =>
+                  this.setState({confirmationPassword})
+                }
+                placeholder="Confirm Password"
+                secureTextEntry
+                errorMessage={
+                  confirmationPasswordValid
+                    ? null
+                    : 'The password fields are not identics'
+                }
+                returnKeyType="go"
+                onSubmitEditing={() => {
+                  this.validateConfirmationPassword();
+                  this.register();
+                }}
+              />
+            }
           </View>
           <Button
             loading={isLoading}
-            title="SIGNUP"
+            title={ register ? "SIGNUP" : "LOGIN"}
             containerStyle={{flex: -1}}
             buttonStyle={styles.signUpButton}
             titleStyle={styles.signUpButtonText}
-            onPress={this.register}
+            onPress={register ? this.register : this.login}
             disabled={isLoading}
           />
         </KeyboardAvoidingView>
         <View style={styles.loginHereContainer}>
           <Text style={styles.alreadyAccountText}>
-            Already have an account.
+            { register ? "Already have an account." : "Doesn't have an account ?" }
           </Text>
           <Button
-            title="Login here"
+            title={ register ? "Login here": "Sing up here" }
             titleStyle={styles.loginHereText}
             containerStyle={{flex: -1}}
             buttonStyle={{backgroundColor: 'transparent'}}
-            //underlayColor="transparent"
-            onPress={() => Alert.alert('🔥', 'You can login here')}
+            onPress={() => this.setState({register: !register})}
           />
         </View>
       </ScrollView>
@@ -259,11 +247,11 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
   },
   formContainer: {
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   signUpText: {
@@ -271,10 +259,17 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontFamily: 'UbuntuLight',
   },
-  whoAreYouText: {
+  swaggSentence: {
     color: '#7384B4',
     fontFamily: 'UbuntuBold',
     fontSize: 14,
+    maxWidth: SCREEN_WIDTH * 0.7,
+  },
+  apiError: {
+    color: 'crimson',
+    fontFamily: 'UbuntuBold',
+    fontSize: 14,
+    maxWidth: SCREEN_WIDTH * 0.7,
   },
   signUpButtonText: {
     fontFamily: 'UbuntuBold',

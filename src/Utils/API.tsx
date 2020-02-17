@@ -1,7 +1,7 @@
 
 const base_url = 'https://safe-anchorage-52970.herokuapp.com/';
 
-const API = {
+export const API = {
     post: (url : string, content: {})=>{
         return fetch(url, {
             method: 'POST',
@@ -19,4 +19,8 @@ const API = {
     url_register: base_url + 'api/user/register',
 }
 
-export default API
+
+export interface LoginType {
+    token?: string;
+    message?: string;
+}
