@@ -67,8 +67,8 @@ export default class ScanResult extends Component<IProps, IState> {
     });
   };
 
-  _normalizeData(data: any[], type: string) {
-    return data.map((item: {id: number; text: string}, index) => {
+  _normalizeData(data: {id: number; text: string}[], type: string) {
+    return data.map((item: {id: number; text: string}, index: number) => {
       return {id: index, text: item[type]};
     });
   }

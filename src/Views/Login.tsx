@@ -7,13 +7,13 @@ import {
   Text,
   View,
 } from 'react-native';
-import { connect } from 'react-redux';
-import { Input, Button } from 'react-native-elements';
-import { Store, RootState } from '../store/configureStore';
-import { userToken } from '../store/actions/userActions';
+import {connect} from 'react-redux';
+import {Input, Button} from 'react-native-elements';
+import {Store, RootState} from '../store/configureStore';
+import {userToken} from '../store/actions/userActions';
 import FormInput from '../Components/FormInput';
-import { SCREEN_HEIGHT, SCREEN_WIDTH, IS_DEBUG } from '../Utils/Utility';
-import API from '../Utils/API'
+import {SCREEN_HEIGHT, SCREEN_WIDTH, IS_DEBUG} from '../Utils/Utility';
+import API from '../Utils/API';
 
 interface IState {
   isLoading: boolean;
@@ -54,60 +54,65 @@ class Login extends Component<null, IState> {
   }
 
   register = () => {
-    const { email, password } = this.state;
-    if (IS_DEBUG || (this.validateUsername()
-        && this.validateEmail()
-        && this.validatePassword()
-        && this.validateConfirmationPassword())) {
-      this.setState({ isLoading: true });
-      API.post(`${API.url_register}`, {email, password})
-      .then(response => {
-        if (response.status >= 200 && response.status < 300) {
-          Store.dispatch(userToken({ token: "token"}));
-        }
-        this.setState({ isLoading: false });
-    })
-    .catch(err => {
-      this.setState({ isLoading: false });
-      return err;
-    });
+    const {username, email, password} = this.state;
+    if (
+      this.validateUsername() &&
+      this.validateEmail() &&
+      this.validatePassword() &&
+      this.validateConfirmationPassword()
+    ) {
+      this.setState({isLoading: true});
+      API.post(`${API.url_register}`, {username, email, password})
+        .then(response => {
+          if (response.status >= 200 && response.status < 300) {
+            Store.dispatch(userToken({token: 'token'}));
+          }
+          this.setState({isLoading: false});
+        })
+        .catch(err => {
+          this.setState({isLoading: false});
+          return err;
+        });
     }
   };
 
   login = () => {
-    const { email, password } = this.state;
-    if (IS_DEBUG || (this.validateUsername()
-        && this.validateEmail()
-        && this.validatePassword()
-        && this.validateConfirmationPassword())) {
-      this.setState({ isLoading: true });
+    const {email, password} = this.state;
+    if (
+      IS_DEBUG ||
+      (this.validateUsername() &&
+        this.validateEmail() &&
+        this.validatePassword() &&
+        this.validateConfirmationPassword())
+    ) {
+      this.setState({isLoading: true});
     }
   };
 
   validateUsername = () => {
-    const { username } = this.state;
+    const {username} = this.state;
     const usernameValid = username.length > 0;
-    this.setState({ usernameValid });
+    this.setState({usernameValid});
     return usernameValid;
   };
 
   validateEmail = () => {
-    const { email } = this.state;
+    const {email} = this.state;
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const emailValid = re.test(email);
-    this.setState({ emailValid });
+    this.setState({emailValid});
     return emailValid;
   };
 
   validatePassword = () => {
-    const { password } = this.state;
+    const {password} = this.state;
     const passwordValid = password.length >= 1;
-    this.setState({ passwordValid });
+    this.setState({passwordValid});
     return passwordValid;
   };
 
   validateConfirmationPassword = () => {
-    const { password, confirmationPassword } = this.state;
+    const {password, confirmationPassword} = this.state;
     const confirmationPasswordValid = password === confirmationPassword;
     return confirmationPasswordValid;
   };
@@ -237,16 +242,13 @@ class Login extends Component<null, IState> {
   }
 }
 
-const mapStateToProps = function(state : RootState) {
+const mapStateToProps = function(state: RootState) {
   return {
-    isLoading: (state.userReducer.token === "") ? false : true,
-  }
-}
+    isLoading: state.userReducer.token === '' ? false : true,
+  };
+};
 
-const ConnectLogin = connect(
-  mapStateToProps,
-  null
-)(Login)
+const ConnectLogin = connect(mapStateToProps, null)(Login);
 
 export default ConnectLogin;
 
