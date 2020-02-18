@@ -3,9 +3,7 @@ import {
   StyleSheet,
   Image,
   View,
-  ModalProps,
   FlatList,
-  ImageSourcePropType,
   TouchableOpacity,
 } from 'react-native';
 import Modal from 'react-native-modal';

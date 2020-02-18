@@ -7,6 +7,7 @@ import {NavigationScreenProp} from 'react-navigation';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../Utils/Utility';
 import Colors from '../Utils/Colors';
 import ProfilePicturesModal from '../Components/ProfilePicturesModal';
+import API from '../Utils/API';
 
 interface IProps {
   navigation: NavigationScreenProp<any, any>;
@@ -16,6 +17,8 @@ interface IState {
   infoChanged: boolean;
   isVisible: boolean;
   profilePicture: any;
+  username: string;
+  email: string;
 }
 
 export default class Glossary extends Component<IProps, IState> {
@@ -26,8 +29,34 @@ export default class Glossary extends Component<IProps, IState> {
       infoChanged: false,
       isVisible: false,
       profilePicture: '',
+      username: '',
+      email: '',
     };
   }
+
+  componentDidMount() {
+    this._loadProfilePicture();
+    this._getUserInfo();
+  }
+
+  _loadProfilePicture = async () => {
+    try {
+      const profilePicture = await AsyncStorage.getItem('profilePicture');
+      if (profilePicture !== null) {
+        this.setState({profilePicture});
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  _getUserInfo = () => {
+    API.get(API.url_me, {id: '3ab727f7-ca91-403c-a545-329c0100c147'}).then(
+      response => {
+        // console.log('Got a response', response);
+      },
+    );
+  };
 
   _setProfilePicture = async (picture: any) => {
     this.setState({
@@ -35,7 +64,7 @@ export default class Glossary extends Component<IProps, IState> {
       profilePicture: picture,
     });
     try {
-      await AsyncStorage.setItem('profilePicture', picture);
+      await AsyncStorage.setItem('profilePicture', picture.toString());
     } catch (error) {
       console.log(error);
     }
@@ -63,8 +92,16 @@ export default class Glossary extends Component<IProps, IState> {
           Update profile picture
         </Text>
         <View style={styles.info}>
-          <Input label="Username" labelStyle={styles.label} />
-          <Input label="Email" labelStyle={styles.label} />
+          <Input
+            label="Username"
+            labelStyle={styles.label}
+            value={this.state.username}
+          />
+          <Input
+            label="Email"
+            labelStyle={styles.label}
+            value={this.state.email}
+          />
         </View>
         <Text
           style={
@@ -85,22 +122,22 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.3,
     height: SCREEN_WIDTH * 0.3,
     borderRadius: (SCREEN_WIDTH * 0.3) / 2,
-    backgroundColor: Colors.pink,
     alignSelf: 'center',
     marginTop: 35,
     justifyContent: 'center',
     alignItems: 'center',
   },
   profilePicture: {
-    width: SCREEN_WIDTH * 0.22,
-    height: SCREEN_WIDTH * 0.22,
+    width: SCREEN_WIDTH * 0.3,
+    height: SCREEN_WIDTH * 0.3,
+    borderRadius: (SCREEN_WIDTH * 0.3) / 2,
   },
   info: {
     marginTop: 25,
     alignSelf: 'center',
     flex: 1,
     opacity: 1,
-    backgroundColor: 'rgba(200, 10, 50, 0.1)',
+    backgroundColor: 'rgba(50, 50, 50, 0)',
     borderRadius: 10,
     width: SCREEN_WIDTH * 0.95,
     maxHeight: SCREEN_HEIGHT * 0.54,
