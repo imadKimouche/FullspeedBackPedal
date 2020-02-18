@@ -36,9 +36,6 @@ const SWAGG_SENTENCES: string[] = [
 ];
 
 class Login extends Component<null, IState> {
-  static navigationOptions = {
-    name: 'Login',
-  };
   private usernameInput: React.RefObject<Input>;
   private emailInput: React.RefObject<Input>;
   private passwordInput: React.RefObject<Input>;

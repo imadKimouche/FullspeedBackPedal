@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Text, FlatList} from 'react-native';
-import Colors from '../Utils/Colors';
+import Colors from '../../Utils/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 interface IData {
@@ -22,7 +22,7 @@ const Item = (text: string) => {
   );
 };
 
-const List = (props: IProps) => {
+const InfoCard = (props: IProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{props.title}</Text>
@@ -39,7 +39,9 @@ const List = (props: IProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    position: 'absolute',
+    backgroundColor: Colors.white,
+    borderRadius: 10,
   },
   title: {
     color: Colors.pink,
@@ -60,4 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default List;
+export default InfoCard;

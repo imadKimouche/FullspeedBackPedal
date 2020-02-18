@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, SafeAreaView} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {Text, Image} from 'react-native-animatable';
 import {NavigationScreenProp} from 'react-navigation';
 
 import Colors from '../Utils/Colors';
 import {Images} from '../Utils/Images';
 import {SCREEN_WIDTH} from '../Utils/Utility';
-import List from '../Components/List';
+import InfoCard from '../Components/Preview/InfoCard';
 import BugIndicator from '../Components/BugIndicator';
-import {ScrollView} from 'react-native-gesture-handler';
+
+import SwipeHandler, {swipeDirections} from '../Utils/SwipeHandler';
 
 interface IProps {
   navigation: NavigationScreenProp<any, any>;
@@ -55,6 +56,20 @@ export default class ScanResult extends Component<IProps, IState> {
     }).then(response => this._handleResponse(response));
   }
 
+  _onSwipe(gestureName: swipeDirections): void {
+    const {SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+    switch (gestureName) {
+      case SWIPE_LEFT:
+        console.log('Swiping left');
+        break;
+      case SWIPE_RIGHT:
+        console.log('Swiping right');
+        break;
+      default:
+        break;
+    }
+  }
+
   _handleResponse = (response: Response) => {
     response.json().then(responseJson => {
       this.symptoms = this._normalizeData(responseJson.symptoms, 'symptom');
@@ -85,11 +100,18 @@ export default class ScanResult extends Component<IProps, IState> {
           />
         </View>
         {this.state.dataReady && (
-          <ScrollView style={styles.lists}>
-            <List title="Symptoms" data={this.symptoms} />
-            <List title="Treatments" data={this.treatments} />
-            <List title="How to avoid" data={this.avoids} />
-          </ScrollView>
+          <View style={styles.lists}>
+            <SwipeHandler
+              onSwipe={direction => this._onSwipe(direction)}
+              config={{
+                velocityThreshold: 0.3,
+                directionalOffsetThreshold: 80,
+              }}>
+              <InfoCard title="Symptoms" data={this.symptoms} />
+              <InfoCard title="Treatments" data={this.treatments} />
+              <InfoCard title="How to avoid" data={this.avoids} />
+            </SwipeHandler>
+          </View>
         )}
         {!this.state.dataReady && <BugIndicator style={styles.icon} />}
       </View>
@@ -122,7 +144,6 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.2,
   },
   lists: {
-    backgroundColor: Colors.white,
     flex: 1,
     marginTop: 10,
     marginRight: 10,
