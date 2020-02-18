@@ -1,6 +1,13 @@
-const base_url = 'https://safe-anchorage-52970.herokuapp.com/';
+const base_url = 'https://safe-anchorage-52970.herokuapp.com/api';
 
-const API = {
+const objectToParam = (object: any) => {
+  var listParam: string[] = Object.keys(object).map(
+    key => `${key}=${object[key]}`,
+  );
+  return listParam.join('&');
+};
+
+export const API = {
   post: (url: string, content: {}) => {
     return fetch(url, {
       method: 'POST',
@@ -8,33 +15,36 @@ const API = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(content),
-    }).catch(error => {
-      console.log('ERROR API POST: ' + error);
-      return error;
+    }).catch(err => {
+      console.log('ERROR:' + err);
+      return err;
     });
   },
-  get: (url: string, content: {}, token = '') => {
-    var urlencoded = new URLSearchParams();
-    Object.keys(content).forEach((key: any) => {
-      urlencoded.append(key, content[key]);
-    });
-    console.log('urlencoded: ', urlencoded);
-    return fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.M2FiNzI3ZjctY2E5MS00MDNjLWE1NDUtMzI5YzAxMDBjMTQ3.rS8zL_NgP0tknzeBdmrvCrbAb2PmIMWTM5AEoIEtZlM',
+  get: (url: string, content: {}) => {
+    return fetch(
+      url + (Object.keys(content).length ? '?' + objectToParam(content) : ''),
+      {
+        method: 'GET',
       },
-      body: urlencoded,
-    }).catch(error => {
-      console.log('ERROR API GET: ' + error);
-      return error;
+    ).catch(err => {
+      console.log('ERROR:' + err);
+      return err;
     });
   },
-  url_login: base_url + 'api/user/login',
-  url_register: base_url + 'api/user/register',
-  url_me: base_url + 'api/me',
+  url_login: base_url + '/user/login',
+  url_insects: base_url + '/insects',
+  url_me: base_url + '/me',
+  url_register: base_url + '/user/register',
 };
 
-export default API;
+export interface LoginType {
+  token?: string;
+  message?: string;
+}
+
+export interface InsectType {
+  id: number;
+  name: string;
+  threatlevel: number;
+  picture: string;
+}

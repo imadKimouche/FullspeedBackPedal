@@ -7,7 +7,7 @@ import {NavigationScreenProp} from 'react-navigation';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../Utils/Utility';
 import Colors from '../Utils/Colors';
 import ProfilePicturesModal from '../Components/ProfilePicturesModal';
-import API from '../Utils/API';
+import {API} from '../Utils/API';
 
 interface IProps {
   navigation: NavigationScreenProp<any, any>;

@@ -12,31 +12,30 @@ import {Input, Button} from 'react-native-elements';
 import {Store, RootState} from '../store/configureStore';
 import {userToken} from '../store/actions/userActions';
 import FormInput from '../Components/FormInput';
+<<<<<<< HEAD
 import {SCREEN_HEIGHT, SCREEN_WIDTH, IS_DEBUG} from '../Utils/Utility';
-import {API, LoginType} from '../Utils/API';
+import API from '../Utils/API';
+=======
+import { SCREEN_HEIGHT, SCREEN_WIDTH, IS_DEBUG } from '../Utils/Utility';
+import { API, LoginType } from '../Utils/API'
+>>>>>>> 2f67c3045973073ee572adc358c6c6a07493c347
 
 interface IState {
   register: boolean;
   isLoading: boolean;
-  apiresponse: string;
+  apiResponce: string;
   email: string;
   password: string;
   confirmationPassword: string;
   emailValid: boolean;
   passwordValid: boolean;
-  usernameValid: boolean;
   confirmationPasswordValid: boolean;
 }
 
-const SWAGG_SENTENCES: string[] = [
-  'Get stung ? It will be fine.',
-  "Stay calm, if you are going to die in the next 10 min it's already too late anyway.",
-  'At least mosquito like you.',
-  'Pain is temporary...in some cases',
-];
+
+const SWAGG_SENTENCES : string[] = ["Get stung ? It will be fine.", "Stay calm, if you are going to die in the next 10 min it's already too late anyway.", "At least mosquito like you."];
 
 class Login extends Component<null, IState> {
-  private usernameInput: React.RefObject<Input>;
   private emailInput: React.RefObject<Input>;
   private passwordInput: React.RefObject<Input>;
   private confirmationPasswordInput: React.RefObject<Input>;
@@ -44,98 +43,132 @@ class Login extends Component<null, IState> {
   state: IState = {
     register: true,
     isLoading: false,
-    apiresponse: '',
+    apiResponce: '',
     email: '',
     password: '',
     confirmationPassword: '',
     emailValid: true,
     passwordValid: true,
-    usernameValid: true,
     confirmationPasswordValid: true,
   };
 
   constructor(props: any) {
     super(props);
-    this.usernameInput = React.createRef();
     this.emailInput = React.createRef();
     this.passwordInput = React.createRef();
     this.confirmationPasswordInput = React.createRef();
   }
 
   register = () => {
-    const {email, password} = this.state;
+<<<<<<< HEAD
+    const {username, email, password} = this.state;
     if (
-      IS_DEBUG ||
-      (this.validateEmail() &&
-        this.validatePassword() &&
-        this.validateConfirmationPassword())
+      this.validateUsername() &&
+      this.validateEmail() &&
+      this.validatePassword() &&
+      this.validateConfirmationPassword()
     ) {
       this.setState({isLoading: true});
-      API.post(`${API.url_register}`, {email, password})
-        .then((response: Response) => this._apiResponse(response))
+      API.post(`${API.url_register}`, {username, email, password})
+        .then(response => {
+          if (response.status >= 200 && response.status < 300) {
+            Store.dispatch(userToken({token: 'token'}));
+          }
+          this.setState({isLoading: false});
+        })
         .catch(err => {
-          this.setState({
-            isLoading: false,
-            apiresponse: "Can't connect to API",
-          });
+          this.setState({isLoading: false});
           return err;
         });
+=======
+    const { email, password } = this.state;
+    if (IS_DEBUG || (this.validateEmail()
+        && this.validatePassword()
+        && this.validateConfirmationPassword())) {
+      this.setState({ isLoading: true });
+      API.post(`${API.url_register}`, {email, password})
+      .then((response:Response) => this._apiResponse(response))
+      .catch(err => {
+        this.setState({ isLoading: false, apiResponce: "Can't connect to API" });
+        return err;
+      });
+>>>>>>> 2f67c3045973073ee572adc358c6c6a07493c347
     }
   };
 
   login = () => {
+<<<<<<< HEAD
     const {email, password} = this.state;
-    if (IS_DEBUG || (this.validateEmail() && this.validatePassword())) {
+    if (
+      IS_DEBUG ||
+      (this.validateUsername() &&
+        this.validateEmail() &&
+        this.validatePassword() &&
+        this.validateConfirmationPassword())
+    ) {
       this.setState({isLoading: true});
+    }
+  };
+
+  validateUsername = () => {
+    const {username} = this.state;
+    const usernameValid = username.length > 0;
+    this.setState({usernameValid});
+    return usernameValid;
+  };
+=======
+    const { email, password } = this.state;
+    if (IS_DEBUG || (this.validateEmail()
+        && this.validatePassword())) {
+      this.setState({ isLoading: true });
       API.post(`${API.url_login}`, {email, password})
-        .then((response: Response) => this._apiResponse(response))
-        .catch(err => {
-          this.setState({
-            isLoading: false,
-            apiresponse: "Can't connect to API",
-          });
-          return err;
-        });
+      .then((response:Response) => this._apiResponse(response))
+      .catch(err => {
+        this.setState({ isLoading: false, apiResponce: "Can't connect to API"});
+        return err;
+      });
     }
   };
 
   _apiResponse = (response: Response) => {
-    response.json().then((responseJSON: LoginType) => {
-      if (
-        response.status >= 200 &&
-        response.status < 300 &&
-        responseJSON.token != null
-      ) {
-        Store.dispatch(userToken({token: responseJSON.token}));
-        this.setState({isLoading: false});
+    response.json().then((responseJSON : LoginType) => {
+      if (response.status >= 200 && response.status < 300 && responseJSON.token != null) {
+        Store.dispatch(userToken({ token: responseJSON.token}));
+        this.setState({ isLoading: false});
       } else {
-        this.setState({
-          isLoading: false,
-          apiresponse: responseJSON.message ? responseJSON.message : '',
-        });
+        this.setState({ isLoading: false, apiResponce: responseJSON.message ? responseJSON.message : "" });
       }
-    });
-  };
+    })
+  }
+>>>>>>> 2f67c3045973073ee572adc358c6c6a07493c347
 
   validateEmail = () => {
     const {email} = this.state;
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const emailValid = re.test(email);
-    this.setState({emailValid, apiresponse: ''});
+<<<<<<< HEAD
+    this.setState({emailValid});
+=======
+    this.setState({ emailValid, apiResponce: "" });
+>>>>>>> 2f67c3045973073ee572adc358c6c6a07493c347
     return emailValid;
   };
 
   validatePassword = () => {
     const {password} = this.state;
     const passwordValid = password.length >= 1;
-    this.setState({passwordValid, apiresponse: ''});
+<<<<<<< HEAD
+    this.setState({passwordValid});
+=======
+    this.setState({ passwordValid, apiResponce: "" });
+>>>>>>> 2f67c3045973073ee572adc358c6c6a07493c347
     return passwordValid;
   };
 
   validateConfirmationPassword = () => {
     const {password, confirmationPassword} = this.state;
     const confirmationPasswordValid = password === confirmationPassword;
-    this.setState({apiresponse: ''});
+    this.setState({ apiResponce: "" });
     return confirmationPasswordValid;
   };
 
@@ -143,15 +176,13 @@ class Login extends Component<null, IState> {
     const {
       isLoading,
       register,
-      apiresponse,
+      apiResponce,
       confirmationPassword,
       email,
       emailValid,
       password,
       passwordValid,
       confirmationPasswordValid,
-      username,
-      usernameValid,
     } = this.state;
 
     return (
@@ -161,17 +192,9 @@ class Login extends Component<null, IState> {
         <KeyboardAvoidingView
           behavior="position"
           contentContainerStyle={styles.formContainer}>
-          <Text style={styles.signUpText}>
-            {register ? 'Sign up' : 'Login'}
-          </Text>
-          <Text style={styles.swaggSentence}>
-            {
-              SWAGG_SENTENCES[
-                Math.floor(Math.random() * SWAGG_SENTENCES.length)
-              ]
-            }
-          </Text>
-          <Text style={styles.apiError}>{apiresponse}</Text>
+          <Text style={styles.signUpText}>{register ? "Sign up" : "Login"}</Text>
+          <Text style={styles.swaggSentence}>{SWAGG_SENTENCES[Math.floor(Math.random() * SWAGG_SENTENCES.length)]}</Text>
+          <Text style={styles.apiError}>{apiResponce}</Text>
           <View style={{width: '80%', alignItems: 'center', height: '30%'}}>
             <FormInput
               refInput={(input: any) => (this.emailInput = input)}
@@ -207,8 +230,7 @@ class Login extends Component<null, IState> {
                   this.confirmationPasswordInput.current.focus();
               }}
             />
-            {register === true && (
-              <FormInput
+            { register === true && <FormInput
                 refInput={(input: any) =>
                   (this.confirmationPasswordInput = input)
                 }
@@ -230,11 +252,11 @@ class Login extends Component<null, IState> {
                   this.register();
                 }}
               />
-            )}
+            }
           </View>
           <Button
             loading={isLoading}
-            title={register ? 'SIGNUP' : 'LOGIN'}
+            title={ register ? "SIGNUP" : "LOGIN"}
             containerStyle={{flex: -1}}
             buttonStyle={styles.signUpButton}
             titleStyle={styles.signUpButtonText}
@@ -244,12 +266,10 @@ class Login extends Component<null, IState> {
         </KeyboardAvoidingView>
         <View style={styles.loginHereContainer}>
           <Text style={styles.alreadyAccountText}>
-            {register
-              ? 'Already have an account.'
-              : "Doesn't have an account ?"}
+            { register ? "Already have an account." : "Doesn't have an account ?" }
           </Text>
           <Button
-            title={register ? 'Login here' : 'Sing up here'}
+            title={ register ? "Login here": "Sing up here" }
             titleStyle={styles.loginHereText}
             containerStyle={{flex: -1}}
             buttonStyle={{backgroundColor: 'transparent'}}
