@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, ComponentType} from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -18,7 +18,7 @@ import {API, LoginType} from '../Utils/API';
 interface IState {
   register: boolean;
   isLoading: boolean;
-  apiresponse: string;
+  apiResponse: string;
   email: string;
   password: string;
   confirmationPassword: string;
@@ -29,13 +29,16 @@ interface IState {
 }
 
 const SWAGG_SENTENCES: string[] = [
-  'Get stung ? It will be fine.',
+  'Got stung ? It will be fine.',
   "Stay calm, if you are going to die in the next 10 min it's already too late anyway.",
   'At least mosquito like you.',
   'Pain is temporary...in some cases',
 ];
 
 class Login extends Component<null, IState> {
+  static navigationOptions = {
+    name: 'Login',
+  };
   private usernameInput: React.RefObject<Input>;
   private emailInput: React.RefObject<Input>;
   private passwordInput: React.RefObject<Input>;
@@ -44,7 +47,7 @@ class Login extends Component<null, IState> {
   state: IState = {
     register: true,
     isLoading: false,
-    apiresponse: '',
+    apiResponse: '',
     email: '',
     password: '',
     confirmationPassword: '',
@@ -76,7 +79,7 @@ class Login extends Component<null, IState> {
         .catch(err => {
           this.setState({
             isLoading: false,
-            apiresponse: "Can't connect to API",
+            apiResponse: "Can't connect to API",
           });
           return err;
         });
@@ -92,7 +95,7 @@ class Login extends Component<null, IState> {
         .catch(err => {
           this.setState({
             isLoading: false,
-            apiresponse: "Can't connect to API",
+            apiResponse: "Can't connect to API",
           });
           return err;
         });
@@ -111,7 +114,7 @@ class Login extends Component<null, IState> {
       } else {
         this.setState({
           isLoading: false,
-          apiresponse: responseJSON.message ? responseJSON.message : '',
+          apiResponse: responseJSON.message ? responseJSON.message : '',
         });
       }
     });
@@ -121,21 +124,21 @@ class Login extends Component<null, IState> {
     const {email} = this.state;
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const emailValid = re.test(email);
-    this.setState({emailValid, apiresponse: ''});
+    this.setState({emailValid, apiResponse: ''});
     return emailValid;
   };
 
   validatePassword = () => {
     const {password} = this.state;
     const passwordValid = password.length >= 1;
-    this.setState({passwordValid, apiresponse: ''});
+    this.setState({passwordValid, apiResponse: ''});
     return passwordValid;
   };
 
   validateConfirmationPassword = () => {
     const {password, confirmationPassword} = this.state;
     const confirmationPasswordValid = password === confirmationPassword;
-    this.setState({apiresponse: ''});
+    this.setState({apiResponse: ''});
     return confirmationPasswordValid;
   };
 
@@ -143,7 +146,7 @@ class Login extends Component<null, IState> {
     const {
       isLoading,
       register,
-      apiresponse,
+      apiResponse,
       confirmationPassword,
       email,
       emailValid,
@@ -171,7 +174,7 @@ class Login extends Component<null, IState> {
               ]
             }
           </Text>
-          <Text style={styles.apiError}>{apiresponse}</Text>
+          <Text style={styles.apiError}>{apiResponse}</Text>
           <View style={{width: '80%', alignItems: 'center', height: '30%'}}>
             <FormInput
               refInput={(input: any) => (this.emailInput = input)}
@@ -267,7 +270,7 @@ const mapStateToProps = function(state: RootState) {
   };
 };
 
-const ConnectLogin = connect(mapStateToProps, null)(Login);
+const ConnectLogin = connect(mapStateToProps)(Login as ComponentType);
 
 export default ConnectLogin;
 

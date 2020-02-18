@@ -16,12 +16,8 @@ import {Text} from 'react-native-animatable';
 interface IProps {
   isVisible: boolean;
   setProfilePicture: (picture: any) => void;
+  closeModal: () => void;
 }
-
-type IData = {
-  id: number;
-  picture: string;
-};
 
 const dataPictures = [0, 1, 2];
 const pictures = [Images.poro_1, Images.poro_2, Images.poro_3];
@@ -39,8 +35,15 @@ const ProfilePicturesModal = (props: IProps) => {
   };
 
   return (
-    <Modal isVisible={props.isVisible}>
+    <Modal isVisible={props.isVisible} animationIn="zoomIn">
       <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => {
+            props.closeModal();
+          }}>
+          <Text>x</Text>
+        </TouchableOpacity>
         <Text style={styles.title}>Select a picture</Text>
         <FlatList
           horizontal={true}
@@ -64,7 +67,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   profilePicture: {
-    backgroundColor: Colors.pink,
     width: SCREEN_WIDTH * 0.2,
     height: SCREEN_WIDTH * 0.2,
     alignItems: 'center',
@@ -74,13 +76,19 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   image: {
-    width: SCREEN_WIDTH * 0.2,
-    height: SCREEN_WIDTH * 0.2,
+    width: SCREEN_WIDTH * 0.22,
+    height: SCREEN_WIDTH * 0.22,
+    borderRadius: Math.round(SCREEN_WIDTH * 0.22) / 2,
     alignSelf: 'center',
   },
   title: {
     marginTop: 20,
     fontWeight: 'bold',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 15,
   },
 });
 

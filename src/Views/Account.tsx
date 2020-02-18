@@ -8,6 +8,8 @@ import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../Utils/Utility';
 import Colors from '../Utils/Colors';
 import ProfilePicturesModal from '../Components/ProfilePicturesModal';
 import {API} from '../Utils/API';
+import {Store} from '../store/configureStore';
+import {logout} from '../store/actions/userActions';
 
 interface IProps {
   navigation: NavigationScreenProp<any, any>;
@@ -21,7 +23,7 @@ interface IState {
   email: string;
 }
 
-export default class Glossary extends Component<IProps, IState> {
+export default class Account extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
@@ -76,6 +78,9 @@ export default class Glossary extends Component<IProps, IState> {
         <ProfilePicturesModal
           isVisible={this.state.isVisible}
           setProfilePicture={this._setProfilePicture}
+          closeModal={() => {
+            this.setState({isVisible: false});
+          }}
         />
         <TouchableOpacity style={styles.profileLogo}>
           <Image
@@ -109,6 +114,14 @@ export default class Glossary extends Component<IProps, IState> {
           }>
           Update profile information
         </Text>
+        <Text
+          style={[styles.clickableText, {color: Colors.danger}]}
+          onPress={() => {
+            Store.dispatch(logout(0));
+            this.props.navigation.navigate('Login');
+          }}>
+          Log out
+        </Text>
       </View>
     );
   }
@@ -140,7 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(50, 50, 50, 0)',
     borderRadius: 10,
     width: SCREEN_WIDTH * 0.95,
-    maxHeight: SCREEN_HEIGHT * 0.54,
+    maxHeight: SCREEN_HEIGHT * 0.5,
     padding: 10,
   },
   clickableText: {

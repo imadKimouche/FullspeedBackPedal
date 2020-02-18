@@ -1,23 +1,19 @@
-
 import React from 'react';
-import { Store, RootState } from '../store/configureStore';
-import Login from '../Views/Login';
-import HomeNavigator from './HomeNavigator';
-import { connect } from 'react-redux';
-import { userToken } from '../store/actions/userActions';
+import {Store, RootState} from '../store/configureStore';
+import {useSelector} from 'react-redux';
+import {start, userToken} from '../store/actions/userActions';
+import {CreateRootNavigator} from './CreateRootNavigator';
 
-const LoginNavigator = (props : {isLogged?: boolean}) => {
-  console.log(props.isLogged)
-  //Store.dispatch(userToken({ token: ""}));
-  return (!props.isLogged) ?  <Login/> : <HomeNavigator/>
-}
+const RootNavigator = () => {
+  Store.dispatch(start(0));
+  // Store.dispatch(userToken({token: ''}));
+  const isLogged = useSelector(
+    (state: RootState) => state.userReducer.token !== '',
+  );
+  console.log(isLogged);
+  let Layout = CreateRootNavigator(isLogged);
 
-const mapStateToProps = function(state : RootState) {
-  return {
-    isLogged: (state.userReducer.token == "") ? false : true,
-  }
-}
+  return <Layout />;
+};
 
-const LoginNavigatorConnected = connect(mapStateToProps, null)(LoginNavigator)
-
-export default LoginNavigatorConnected;
+export default RootNavigator;

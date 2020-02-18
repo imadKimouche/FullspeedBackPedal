@@ -7,8 +7,12 @@
  */
 
 import React from 'react';
-import { Provider } from 'react-redux';
-import { Store } from './store/configureStore';
+import {Provider} from 'react-redux';
+import {Store} from './store/configureStore';
 import RootNavigator from './navigation/RootNavigator';
 
-export default () => <Provider store={Store}><RootNavigator/></Provider>;
+export default () => (
+  <Provider store={Store}>
+    <RootNavigator />
+  </Provider>
+);
