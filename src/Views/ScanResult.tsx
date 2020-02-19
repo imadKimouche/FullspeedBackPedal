@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  PanResponder,
+  PanResponderInstance,
+  GestureResponderEvent,
+  PanResponderGestureState,
+} from 'react-native';
 import {Text, Image} from 'react-native-animatable';
 import {NavigationScreenProp} from 'react-navigation';
 
@@ -22,6 +29,7 @@ interface IData {
 
 interface IState {
   dataReady: boolean;
+  dragValue: number;
 }
 
 export default class ScanResult extends Component<IProps, IState> {
@@ -33,8 +41,18 @@ export default class ScanResult extends Component<IProps, IState> {
   treatments: IData[] = [];
   avoids: IData[] = [];
 
+  private _panResponder: PanResponderInstance;
+
   constructor(props: IProps) {
     super(props);
+
+    const responderMove = this._handleResponderMove.bind(this);
+
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: responderMove,
+    });
 
     this.insectId = this.labels[
       this.props.navigation.state.params.response.insectId
@@ -43,8 +61,18 @@ export default class ScanResult extends Component<IProps, IState> {
 
     this.state = {
       dataReady: false,
+      dragValue: 0,
     };
   }
+
+  private _handleResponderMove = (
+    evt: GestureResponderEvent,
+    gestureState: PanResponderGestureState,
+  ): void => {
+    console.log('#####');
+    console.log(gestureState.dx);
+    this.setState({dragValue: gestureState.dx});
+  };
 
   componentDidMount() {
     this.setState({dataReady: false});
@@ -100,17 +128,14 @@ export default class ScanResult extends Component<IProps, IState> {
           />
         </View>
         {this.state.dataReady && (
-          <View style={styles.lists}>
-            <SwipeHandler
-              onSwipe={direction => this._onSwipe(direction)}
-              config={{
-                velocityThreshold: 0.3,
-                directionalOffsetThreshold: 80,
-              }}>
-              <InfoCard title="Symptoms" data={this.symptoms} />
-              <InfoCard title="Treatments" data={this.treatments} />
-              <InfoCard title="How to avoid" data={this.avoids} />
-            </SwipeHandler>
+          <View style={styles.lists} {...this._panResponder.panHandlers}>
+            <InfoCard right={0} title="Symptoms" data={this.symptoms} />
+            <InfoCard right={0} title="Treatments" data={this.treatments} />
+            <InfoCard
+              right={this.state.dragValue}
+              title="How to avoid"
+              data={this.avoids}
+            />
           </View>
         )}
         {!this.state.dataReady && <BugIndicator style={styles.icon} />}

@@ -8,37 +8,34 @@ import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../Utils/Utility';
 import Colors from '../Utils/Colors';
 import ProfilePicturesModal from '../Components/ProfilePicturesModal';
 import {API} from '../Utils/API';
-import {Store} from '../store/configureStore';
-import {logout} from '../store/actions/userActions';
+import {Store, RootState} from '../store/configureStore';
+import {logout, UserInfo} from '../store/actions/userActions';
+import {connect} from 'react-redux';
 
 interface IProps {
   navigation: NavigationScreenProp<any, any>;
+  userInfo: UserInfo;
 }
 
 interface IState {
-  infoChanged: boolean;
   isVisible: boolean;
   profilePicture: any;
-  username: string;
-  email: string;
 }
 
-export default class Account extends Component<IProps, IState> {
+class Account extends Component<IProps, IState> {
+  versionNumber: string;
   constructor(props: IProps) {
     super(props);
+    this.versionNumber = '0.0.1';
 
     this.state = {
-      infoChanged: false,
       isVisible: false,
       profilePicture: '',
-      username: '',
-      email: '',
     };
   }
 
   componentDidMount() {
     this._loadProfilePicture();
-    this._getUserInfo();
   }
 
   _loadProfilePicture = async () => {
@@ -50,14 +47,6 @@ export default class Account extends Component<IProps, IState> {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  _getUserInfo = () => {
-    API.get(API.url_me, {id: '3ab727f7-ca91-403c-a545-329c0100c147'}).then(
-      response => {
-        // console.log('Got a response', response);
-      },
-    );
   };
 
   _setProfilePicture = async (picture: any) => {
@@ -100,20 +89,14 @@ export default class Account extends Component<IProps, IState> {
           <Input
             label="Username"
             labelStyle={styles.label}
-            value={this.state.username}
+            value={this.props.userInfo.username}
           />
           <Input
             label="Email"
             labelStyle={styles.label}
-            value={this.state.email}
+            value={this.props.userInfo.email}
           />
         </View>
-        <Text
-          style={
-            this.state.infoChanged ? styles.clickableText : styles.inactiveText
-          }>
-          Update profile information
-        </Text>
         <Text
           style={[styles.clickableText, {color: Colors.danger}]}
           onPress={() => {
@@ -122,10 +105,21 @@ export default class Account extends Component<IProps, IState> {
           }}>
           Log out
         </Text>
+        <Text style={styles.infoText}>v {this.versionNumber}</Text>
       </View>
     );
   }
 }
+
+const mapStateToProps = function(state: RootState) {
+  return {
+    userInfo: state.userReducer.userInfo,
+  };
+};
+
+const ConnectAccount = connect(mapStateToProps)(Account);
+
+export default ConnectAccount;
 
 const styles = StyleSheet.create({
   container: {
@@ -172,5 +166,11 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontWeight: 'normal',
     fontFamily: 'Montserrat-Light',
+  },
+  infoText: {
+    color: 'grey',
+    marginTop: 40,
+    marginLeft: 5,
+    fontSize: 12,
   },
 });

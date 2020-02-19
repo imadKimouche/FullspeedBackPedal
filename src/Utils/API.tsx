@@ -38,6 +38,10 @@ export const API = {
 };
 
 export interface LoginType {
+  id: string;
+  username: string;
+  email: string;
+  creation_date: string;
   token?: string;
   message?: string;
 }

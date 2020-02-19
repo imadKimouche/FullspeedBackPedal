@@ -1,13 +1,14 @@
 import {createReducer} from '@reduxjs/toolkit';
 import {
-  userToken,
+  userInfo,
   logout,
   start,
-  UserTokenActionType,
+  UserInfoActionType,
+  UserInfo,
 } from '../actions/userActions';
 import AsyncStorage from '@react-native-community/async-storage';
 
-type SliceState = {token: string};
+type SliceState = {userInfo: UserInfo};
 
 const getAsyncToken = async (): Promise<string | null> => {
   try {
@@ -20,29 +21,39 @@ const getAsyncToken = async (): Promise<string | null> => {
   return null;
 };
 
-const userTokenReducer = (state: SliceState, action: UserTokenActionType) => {
-  state.token = action.payload.token;
+const userInfoReducer = (state: SliceState, action: UserInfoActionType) => {
+  console.log('user information: ', state.userInfo);
+  state.userInfo.token = action.payload.token;
+  state.userInfo.id = action.payload.id;
+  state.userInfo.username = action.payload.username;
+  state.userInfo.email = action.payload.email;
+  state.userInfo.creation_date = action.payload.creation_date;
 };
 
 const startReducer = (state: SliceState) => {
   let userToken = getAsyncToken();
   if (userToken !== null) {
-    userToken.then(token => (state.token = token as string));
+    userToken.then(token => (state.userInfo.token = token as string));
   }
 };
 
 const logoutReducer = (state: SliceState) => {
-  state.token = '';
+  state.userInfo.token = '';
 };
 
 //login {
 // asyncstorage.setitem(usertoken: token) [TODO]
 // }
 
-const userReducer = createReducer({token: ''} as SliceState, {
-  [userToken.type]: userTokenReducer,
-  [logout.type]: logoutReducer,
-  [start.type]: startReducer,
-});
+const userReducer = createReducer(
+  {
+    userInfo: {id: '', username: '', email: '', creation_date: '', token: ''},
+  } as SliceState,
+  {
+    [userInfo.type]: userInfoReducer,
+    [logout.type]: logoutReducer,
+    [start.type]: startReducer,
+  },
+);
 
 export default userReducer;

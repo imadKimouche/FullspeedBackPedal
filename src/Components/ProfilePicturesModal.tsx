@@ -42,7 +42,7 @@ const ProfilePicturesModal = (props: IProps) => {
           onPress={() => {
             props.closeModal();
           }}>
-          <Text>x</Text>
+          <Text style={{color: 'grey'}}>x</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Select a picture</Text>
         <FlatList

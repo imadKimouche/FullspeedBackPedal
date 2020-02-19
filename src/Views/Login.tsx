@@ -10,10 +10,19 @@ import {
 import {connect} from 'react-redux';
 import {Input, Button} from 'react-native-elements';
 import {Store, RootState} from '../store/configureStore';
-import {userToken} from '../store/actions/userActions';
+import {userInfo} from '../store/actions/userActions';
 import FormInput from '../Components/FormInput';
-import {SCREEN_HEIGHT, SCREEN_WIDTH, IS_DEBUG} from '../Utils/Utility';
+import {
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  IS_DEBUG,
+  getSavedEmail,
+  setAsyncItem,
+  getAsyncItem,
+} from '../Utils/Utility';
 import {API, LoginType} from '../Utils/API';
+import Colors from '../Utils/Colors';
+import AsyncStorage from '@react-native-community/async-storage';
 
 interface IState {
   register: boolean;
@@ -62,6 +71,14 @@ class Login extends Component<null, IState> {
     this.confirmationPasswordInput = React.createRef();
   }
 
+  componentDidMount() {
+    getAsyncItem('email').then(item => {
+      if (item !== null) {
+        this.setState({email: item});
+      }
+    });
+  }
+
   register = () => {
     const {email, password} = this.state;
     if (
@@ -85,6 +102,7 @@ class Login extends Component<null, IState> {
 
   login = () => {
     const {email, password} = this.state;
+    setAsyncItem('email', email);
     if (IS_DEBUG || (this.validateEmail() && this.validatePassword())) {
       this.setState({isLoading: true});
       API.post(`${API.url_login}`, {email, password})
@@ -106,7 +124,15 @@ class Login extends Component<null, IState> {
         response.status < 300 &&
         responseJSON.token != null
       ) {
-        Store.dispatch(userToken({token: responseJSON.token}));
+        Store.dispatch(
+          userInfo({
+            id: responseJSON.id,
+            username: responseJSON.username,
+            email: responseJSON.email,
+            creation_date: responseJSON.creation_date,
+            token: responseJSON.token,
+          }),
+        );
         this.setState({isLoading: false});
       } else {
         this.setState({
@@ -222,7 +248,7 @@ class Login extends Component<null, IState> {
                 errorMessage={
                   confirmationPasswordValid
                     ? null
-                    : 'The password fields are not identics'
+                    : 'The password fields are not the same'
                 }
                 returnKeyType="go"
                 onSubmitEditing={() => {
@@ -244,9 +270,7 @@ class Login extends Component<null, IState> {
         </KeyboardAvoidingView>
         <View style={styles.loginHereContainer}>
           <Text style={styles.alreadyAccountText}>
-            {register
-              ? 'Already have an account.'
-              : "Doesn't have an account ?"}
+            {register ? 'Already have an account.' : "Don't have an account ?"}
           </Text>
           <Button
             title={register ? 'Login here' : 'Sing up here'}
@@ -263,7 +287,7 @@ class Login extends Component<null, IState> {
 
 const mapStateToProps = function(state: RootState) {
   return {
-    isLoading: state.userReducer.token === '' ? false : true,
+    isLoading: state.userReducer.userInfo.token === '' ? false : true,
   };
 };
 
@@ -276,7 +300,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 20,
     paddingTop: 20,
-    backgroundColor: '#293046',
+    backgroundColor: Colors.signUp,
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     alignItems: 'center',
@@ -293,7 +317,7 @@ const styles = StyleSheet.create({
     fontFamily: 'UbuntuLight',
   },
   swaggSentence: {
-    color: '#7384B4',
+    color: Colors.swagSentence,
     fontFamily: 'UbuntuBold',
     fontSize: 14,
     maxWidth: SCREEN_WIDTH * 0.7,

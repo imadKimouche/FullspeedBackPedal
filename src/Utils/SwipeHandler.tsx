@@ -51,12 +51,14 @@ export default class SwipeHandler extends React.Component<IProps> {
     super(props);
     const responderEnd = this._handlePanResponderEnd.bind(this);
     const shouldSetResponder = this._handleShouldSetPanResponder.bind(this);
+    const responderMove = this._handleResponderMove.bind(this);
     this._panResponder = PanResponder.create({
       //stop JS beautify collapse
       onStartShouldSetPanResponder: shouldSetResponder,
       onMoveShouldSetPanResponder: shouldSetResponder,
       onPanResponderRelease: responderEnd,
       onPanResponderTerminate: responderEnd,
+      onPanResponderMove: responderMove,
     });
     this._swipeConfig = Object.assign(swipeConfig, props.config);
   }
@@ -66,6 +68,13 @@ export default class SwipeHandler extends React.Component<IProps> {
   // }
 
   componentDidMount() {}
+
+  private _handleResponderMove = (
+    evt: GestureResponderEvent,
+    gestureState: PanResponderGestureState,
+  ): void => {
+    console.log(gestureState.dx);
+  };
 
   /**
    * Checks if swipe is valid
