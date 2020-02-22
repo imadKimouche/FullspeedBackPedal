@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Text, FlatList, StyleProp} from 'react-native';
+import {View, StyleSheet, Text, FlatList, Animated} from 'react-native';
 import Colors from '../../Utils/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -9,7 +9,7 @@ interface IData {
 }
 
 interface IProps {
-  right: number;
+  valueX: number;
   title: string;
   data: IData[];
 }
@@ -25,7 +25,7 @@ const Item = (text: string) => {
 
 const InfoCard = (props: IProps) => {
   return (
-    <View style={[styles.container, {right: props.right}]}>
+    <View style={[styles.container, {translateX: props.valueX}]}>
       <Text style={styles.title}>{props.title}</Text>
       <FlatList
         scrollEnabled={false}

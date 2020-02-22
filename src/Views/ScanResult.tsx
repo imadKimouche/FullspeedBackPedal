@@ -6,6 +6,7 @@ import {
   PanResponderInstance,
   GestureResponderEvent,
   PanResponderGestureState,
+  Animated,
 } from 'react-native';
 import {Text, Image} from 'react-native-animatable';
 import {NavigationScreenProp} from 'react-navigation';
@@ -15,8 +16,6 @@ import {Images} from '../Utils/Images';
 import {SCREEN_WIDTH} from '../Utils/Utility';
 import InfoCard from '../Components/Preview/InfoCard';
 import BugIndicator from '../Components/BugIndicator';
-
-import SwipeHandler, {swipeDirections} from '../Utils/SwipeHandler';
 
 interface IProps {
   navigation: NavigationScreenProp<any, any>;
@@ -29,7 +28,7 @@ interface IData {
 
 interface IState {
   dataReady: boolean;
-  dragValue: number;
+  valueX: number;
 }
 
 export default class ScanResult extends Component<IProps, IState> {
@@ -47,8 +46,9 @@ export default class ScanResult extends Component<IProps, IState> {
     super(props);
 
     const responderMove = this._handleResponderMove.bind(this);
-
+    const grantResponder = this._grantResponder.bind(this);
     this._panResponder = PanResponder.create({
+      onPanResponderGrant: grantResponder,
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: responderMove,
@@ -61,17 +61,30 @@ export default class ScanResult extends Component<IProps, IState> {
 
     this.state = {
       dataReady: false,
-      dragValue: 0,
+      valueX: 15,
     };
   }
+
+  private _grantResponder = (
+    evt: GestureResponderEvent,
+    gestureState: PanResponderGestureState,
+  ): void => {
+    gestureState.dx = this.state.valueX;
+  };
 
   private _handleResponderMove = (
     evt: GestureResponderEvent,
     gestureState: PanResponderGestureState,
   ): void => {
-    console.log('#####');
-    console.log(gestureState.dx);
-    this.setState({dragValue: gestureState.dx});
+    let valueX;
+    if (gestureState.dx > 15) {
+      valueX = 15;
+    } else if (gestureState.dx < -(SCREEN_WIDTH * 2)) {
+      valueX = -(SCREEN_WIDTH * 2);
+    } else {
+      valueX = gestureState.dx;
+    }
+    this.setState({valueX});
   };
 
   componentDidMount() {
@@ -82,20 +95,6 @@ export default class ScanResult extends Component<IProps, IState> {
         'Content-Type': 'application/json',
       },
     }).then(response => this._handleResponse(response));
-  }
-
-  _onSwipe(gestureName: swipeDirections): void {
-    const {SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
-    switch (gestureName) {
-      case SWIPE_LEFT:
-        console.log('Swiping left');
-        break;
-      case SWIPE_RIGHT:
-        console.log('Swiping right');
-        break;
-      default:
-        break;
-    }
   }
 
   _handleResponse = (response: Response) => {
@@ -129,16 +128,56 @@ export default class ScanResult extends Component<IProps, IState> {
         </View>
         {this.state.dataReady && (
           <View style={styles.lists} {...this._panResponder.panHandlers}>
-            <InfoCard right={0} title="Symptoms" data={this.symptoms} />
-            <InfoCard right={0} title="Treatments" data={this.treatments} />
             <InfoCard
-              right={this.state.dragValue}
+              valueX={this.state.valueX}
+              title="Symptoms"
+              data={this.symptoms}
+            />
+            <InfoCard
+              valueX={this.state.valueX + 335}
+              title="Treatments"
+              data={this.treatments}
+            />
+            <InfoCard
+              valueX={this.state.valueX + 700}
               title="How to avoid"
               data={this.avoids}
             />
           </View>
         )}
         {!this.state.dataReady && <BugIndicator style={styles.icon} />}
+        <View
+          style={[
+            styles.dot,
+            {
+              left: SCREEN_WIDTH / 2 - 15,
+              backgroundColor:
+                this.state.valueX > -300 ? Colors.pink : Colors.white,
+            },
+          ]}
+        />
+        <View
+          style={[
+            styles.dot,
+            {
+              left: SCREEN_WIDTH / 2 - 5,
+              backgroundColor:
+                this.state.valueX < -300 && this.state.valueX > -600
+                  ? Colors.pink
+                  : Colors.white,
+            },
+          ]}
+        />
+        <View
+          style={[
+            styles.dot,
+            {
+              left: SCREEN_WIDTH / 2 + 5,
+              backgroundColor:
+                this.state.valueX < -600 ? Colors.pink : Colors.white,
+            },
+          ]}
+        />
       </View>
     );
   }
@@ -179,5 +218,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     position: 'absolute',
     bottom: '30%',
+  },
+  dot: {
+    backgroundColor: Colors.white,
+    height: 6,
+    width: 6,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: Colors.pink,
+    position: 'absolute',
+    bottom: 15,
   },
 });
