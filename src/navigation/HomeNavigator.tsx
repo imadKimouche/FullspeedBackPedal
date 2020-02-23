@@ -3,7 +3,7 @@ import {createAppContainer} from 'react-navigation';
 import {Icon} from 'react-native-elements';
 import React from 'react';
 
-import Glossary from '../Views/Glossary';
+import GlossaryNavigatorContent from '../navigation/GlossaryNavigator';
 import ScannerNavigator from './ScannerNavigator';
 import Account from '../Views/Account';
 import Colors from '../Utils/Colors';
@@ -30,7 +30,7 @@ const HomeNavigatorIcon = ({name, focused}: IProps) => {
 const TabNavigatorContent = createBottomTabNavigator(
   {
     Glossary: {
-      screen: Glossary,
+      screen: GlossaryNavigatorContent,
       navigationOptions: {
         title: 'Glossaire',
         tabBarIcon: ({focused}) => (

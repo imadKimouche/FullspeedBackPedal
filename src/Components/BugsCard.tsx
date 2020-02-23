@@ -11,14 +11,14 @@ interface IProps {
   index: number;
   animation: string;
   duration?: number;
-  onClick: (index: number) => void;
+  onClick: (name: string) => void;
 }
 
 const BugsCard = ({picture, title, index, onClick, animation, duration = 2000} : IProps) => {
   return (
     <TouchableNativeFeedback
       key={title}
-      onPress={()=>{onClick(index)}} >
+      onPress={()=>{onClick(title)}} >
       <Animatable.View key={title}  delay={index * 200} animation={animation} duration={duration} style={styles.container}>
         <View style={styles.leftPart}>
           <View style={{marginLeft: 15}}>

@@ -55,3 +55,8 @@ export interface InsectType {
   threatlevel: number;
   picture: string;
 }
+
+export interface IData {
+  id: number;
+  text: string;
+}

@@ -1,25 +1,64 @@
 import React, {PureComponent} from 'react';
-import {StyleSheet, Text, ScrollView, View, FlatList} from 'react-native';
+import {StyleSheet, Text, View, FlatList} from 'react-native';
 import {Icon} from 'react-native-elements';
-import {API, InsectType} from '../Utils/API';
+import {API, InsectType,IData} from '../Utils/API';
 import BugsCard from '../Components/BugsCard';
-import BugDetails from '../Components/BugDetails';
 import Colors from '../Utils/Colors';
 import * as Animatable from 'react-native-animatable';
-import { SCREEN_WIDTH, SCREEN_HEIGHT } from '../Utils/Utility';
+import {withNavigationFocus, NavigationScreenProp, StackActions} from 'react-navigation';
+import { SCREEN_WIDTH } from '../Utils/Utility';
+
+interface BugInfo {
+  id: number;
+  name: string;
+  picture: string;
+  symptoms: IData[];
+  treatments: IData[];
+  avoids: IData[];
+}
 
 interface IState {
   isLoading: boolean;
-  page: "Cards" | "Details";
   insectList: InsectType[];
+  showCard: boolean;
+  dataReady: boolean;
 }
 
-export default class Glossary extends PureComponent<null, IState> {
+interface IProps {
+  isFocused: boolean;
+  navigation: NavigationScreenProp<any, any>;
+}
+
+class Glossary extends PureComponent<IProps, IState> {
+  insectsData: BugInfo[] = [];
+
   state: IState = {
     isLoading: true,
     insectList: [],
-    page: "Cards",
+    showCard: true,
+    dataReady: false,
   };
+
+  _handleResponse = (id: number, name: string, picture: string, response: Response) => {
+    response.json().then(responseJson => {
+      var info : BugInfo = {
+        id: id,
+        name: name,
+        picture: picture,
+        symptoms: this._normalizeData(responseJson.symptoms, 'symptom'),
+        treatments: this._normalizeData(responseJson.treatments, 'treatment'),
+        avoids: this._normalizeData(responseJson.avoids, 'avoid')
+      };
+      this.insectsData.push(info);
+      this.setState({dataReady: true});
+    });
+  };
+
+  _normalizeData(data: {id: number; text: string}[], type: string) : IData[] {
+    return data.map((item: {id: number; text: string}, index: number) => {
+      return {id: index, text: item[type]};
+    });
+  }
 
   componentDidMount() {
     this._requestInsects();
@@ -35,6 +74,7 @@ export default class Glossary extends PureComponent<null, IState> {
         console.log(err);
         this.setState({
           isLoading: false,
+          showCard: true,
         });
         return err;
       });
@@ -42,17 +82,31 @@ export default class Glossary extends PureComponent<null, IState> {
 
   _apiResponse = (response: Response) => {
     response.json().then((responseJSON: InsectType[]) => {
+      responseJSON.forEach(element => {
+        API.get(API.url_insectAll + element.id).then(response => {
+          this._handleResponse(element.id, element.name, element.picture, response);
+        });
+      });
       this.setState({insectList: responseJSON});
     });
   };
 
-  onInsectClick = (index : number) => {
-    this.setState({page: "Details"});
-    console.log("Click on" + index);
+  onInsectClick = (name : string) => {
+    this.setState({showCard: false});
+    setTimeout(()=>{
+      this.setState({showCard: true});
+      const pushAction = StackActions.push({
+        routeName: 'BugView',
+        params: {
+          info: this.insectsData.find(e => e.name === name),
+        },
+      });
+      this.props.navigation.dispatch(pushAction);
+    }, 700);
   }
 
   render() {
-    const { insectList, page } = this.state;
+    const { insectList, showCard} = this.state;
     return (
       <View style={styles.container}>
         <Animatable.View
@@ -67,9 +121,9 @@ export default class Glossary extends PureComponent<null, IState> {
                 size={62}
               />
             </Animatable.View>
-          <Text  style={styles.heading}>Insectes</Text>
+          <Text style={styles.heading}>Bugs</Text>
         </Animatable.View>
-        <View>
+        <View style={{flex: 1}}>
           <FlatList
             style={styles.cardElement}
             keyExtractor={(item : InsectType) => item.name}
@@ -80,21 +134,17 @@ export default class Glossary extends PureComponent<null, IState> {
                 title={item.name}
                 index={index}
                 onClick={this.onInsectClick}
-                animation={page === "Cards" ? "bounceInLeft" : "fadeOutLeft"}
-                duration={page === "Cards" ? 2000 : 700}/>;
+                animation={showCard && this.props.navigation.state.routeName === "Glossary" ? "bounceInLeft" : "fadeOutLeft"}
+                duration={showCard && this.props.navigation.state.routeName === "Glossary" ? 2000 : 700}/>;
             }}
           />
-          <ScrollView
-            style={styles.detailsElement} >
-            <BugDetails title="Symptoms" list={[]} index={1} />
-            <BugDetails title="Treatments" list={[]} index={2} />
-            <BugDetails title="How to avoid" list={[]} index={3} />
-          </ScrollView>
         </View>
       </View>
     );
   }
 }
+
+export default withNavigationFocus(Glossary)
 
 const styles = StyleSheet.create({
   container: {
@@ -121,5 +171,6 @@ const styles = StyleSheet.create({
   detailsElement: {
     position: "absolute",
     width: SCREEN_WIDTH,
+    backgroundColor: 'red',
   }
 });

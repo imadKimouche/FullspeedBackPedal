@@ -1,6 +1,5 @@
 import React, {PureComponent, ComponentType} from 'react';
 import {
-  Alert,
   KeyboardAvoidingView,
   StyleSheet,
   ScrollView,
@@ -8,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {Input, Button, withTheme} from 'react-native-elements';
+import {Input, Button} from 'react-native-elements';
 import {Store, RootState} from '../store/configureStore';
 import {userInfo} from '../store/actions/userActions';
 import FormInput from '../Components/FormInput';
@@ -327,22 +326,18 @@ const styles = StyleSheet.create({
   signUpText: {
     color: Colors.secondaryLight,
     fontSize: 28,
-    fontFamily: 'UbuntuLight',
   },
   swaggSentence: {
     color: Colors.secondaryText,
-    fontFamily: 'UbuntuBold',
     fontSize: 14,
     marginTop: 30,
     textAlign: 'justify',
   },
   apiError: {
     color: Colors.danger,
-    fontFamily: 'UbuntuBold',
     fontSize: 14,
   },
   signUpButtonText: {
-    fontFamily: 'UbuntuBold',
     fontSize: 13,
   },
   signUpButton: {
@@ -356,13 +351,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   alreadyAccountText: {
-    fontFamily: 'UbuntuLightItalic',
     fontSize: 12,
     color: Colors.black,
   },
   loginHereText: {
     color: Colors.link,
-    fontFamily: 'UbuntuLightItalic',
     fontSize: 12,
   },
 });
