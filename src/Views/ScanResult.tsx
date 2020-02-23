@@ -64,11 +64,14 @@ class ScanResult extends Component<IProps, IState> {
     this.insectId = this.labels[
       this.props.navigation.state.params.response.insectId
     ];
-    this.predictionLabel = this.props.navigation.state.params.response.predictionLabel;
+    this.predictionLabel = this.props.navigation.state.params.response.predictionLabel.replace(
+      /\s/g,
+      '',
+    );
 
     this.state = {
       dataReady: false,
-      valueX: 15,
+      valueX: 5,
     };
   }
 
@@ -156,7 +159,7 @@ class ScanResult extends Component<IProps, IState> {
               data={this.symptoms}
             />
             <InfoCard
-              valueX={this.state.valueX + 335}
+              valueX={this.state.valueX + 350}
               title="Treatments"
               data={this.treatments}
             />
@@ -249,7 +252,7 @@ const styles = StyleSheet.create({
   },
   lists: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
     borderRadius: 10,
