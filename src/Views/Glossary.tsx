@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react';
+<<<<<<< HEAD
 import {
   StyleSheet,
   Text,
@@ -8,6 +9,11 @@ import {
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { API, InsectType } from '../Utils/API';
+=======
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {Icon} from 'react-native-elements';
+import {API, InsectType} from '../Utils/API';
+>>>>>>> 3a97af89bea229a3b9b90694cbec334196a7b354
 import BugsCard from '../Components/BugsCard';
 import Colors from '../Utils/Colors';
 import * as Animatable from 'react-native-animatable';
@@ -18,36 +24,35 @@ interface IState {
 }
 
 export default class Glossary extends PureComponent<null, IState> {
-
   state: IState = {
     isLoading: true,
     insectList: [],
-  }
+  };
 
   componentDidMount() {
     this._requestInsects();
   }
 
   _requestInsects = () => {
-    API.get(`${API.url_insects}`, null)
-    .then((response: Response) => {
-      this.setState({ isLoading: false });
-      return this._apiResponse(response);
-    })
-    .catch(err => {
-      console.log(err)
-      this.setState({
-        isLoading: false,
+    API.get(`${API.url_insects}`)
+      .then((response: Response) => {
+        this.setState({isLoading: false});
+        return this._apiResponse(response);
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          isLoading: false,
+        });
+        return err;
       });
-      return err;
-    });
-  }
+  };
 
-  _apiResponse= (response: Response) => {
+  _apiResponse = (response: Response) => {
     response.json().then((responseJSON: InsectType[]) => {
       this.setState({insectList: responseJSON});
     });
-  }
+  };
 
   onInsectClick = (index : number) => {
     console.log("Click on" + index);
@@ -57,8 +62,16 @@ export default class Glossary extends PureComponent<null, IState> {
     const { insectList } = this.state;
     return (
       <View style={styles.container}>
-        <Animatable.View animation="bounceIn" duration={600} style={styles.headerContainer}>
-          <Icon color={Colors.primaryText} name="bug" type="font-awesome" size={62} />
+        <Animatable.View
+          animation="bounceIn"
+          duration={600}
+          style={styles.headerContainer}>
+          <Icon
+            color={Colors.primaryText}
+            name="bug"
+            type="font-awesome"
+            size={62}
+          />
           <Text style={styles.heading}>Insectes</Text>
         </Animatable.View>
         <FlatList
@@ -82,7 +95,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 40,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.secondaryLight,
+    borderBottomWidth: 0.8,
+    borderBottomColor: Colors.black,
   },
   heading: {
     color: 'white',

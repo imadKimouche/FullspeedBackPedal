@@ -95,7 +95,12 @@ class Scanner extends Component<IProps, IState> {
 
   _handleCapturedImage = (uri: string, base64: string) => {
     this.setState({isTakingPicture: false});
-    this.props.navigation.navigate('ImagePreview', {uri: uri, base64: base64});
+    const timestamp = new Date();
+    this.props.navigation.navigate('ImagePreview', {
+      uri: uri,
+      base64: base64,
+      timestamp,
+    });
   };
 
   _handleCaptureError = (error: string) => {
@@ -134,7 +139,11 @@ class Scanner extends Component<IProps, IState> {
                     )
                     .catch(err => this._handleCaptureError(err));
                 }}>
-                <Icon name="md-camera" size={23} />
+                <Icon
+                  name="md-camera"
+                  size={23}
+                  color={Colors.secondaryLight}
+                />
               </TouchableOpacity>
             </RNCamera>
           </View>

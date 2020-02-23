@@ -98,7 +98,7 @@ class Account extends Component<IProps, IState> {
           />
         </View>
         <Text
-          style={[styles.clickableText, {color: Colors.danger}]}
+          style={[styles.clickableText, {color: Colors.link}]}
           onPress={() => {
             Store.dispatch(logout(0));
             this.props.navigation.navigate('Login');
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   },
   clickableText: {
     marginTop: 14,
-    color: 'blue',
+    color: Colors.secondaryLight,
     textAlign: 'center',
     fontSize: 16,
   },
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-Light',
   },
   infoText: {
-    color: 'grey',
+    color: Colors.secondaryTexta,
     marginTop: 40,
     marginLeft: 5,
     fontSize: 12,

@@ -22,7 +22,7 @@ const HomeNavigatorIcon = ({name, focused}: IProps) => {
         marginTop: 10,
       }}
       type="font-awesome"
-      color={focused ? Colors.pink : 'grey'}
+      color={focused ? Colors.secondaryLight : 'grey'}
     />
   );
 };
@@ -59,7 +59,7 @@ const TabNavigatorContent = createBottomTabNavigator(
   },
   {
     tabBarOptions: {
-      activeTintColor: Colors.pink,
+      activeTintColor: Colors.secondaryLight,
     },
   },
 );

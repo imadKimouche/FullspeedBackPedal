@@ -18,7 +18,7 @@ const BugIndicator = (props: IProps) => {
       iterationCount="infinite"
       name="md-bug"
       size={30}
-      color={Colors.pink}
+      color={Colors.secondaryLight}
     />
   );
 };

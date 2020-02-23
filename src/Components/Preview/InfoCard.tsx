@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   title: {
-    color: Colors.pink,
+    color: Colors.secondaryLight,
     fontSize: 15,
     padding: 5,
   },

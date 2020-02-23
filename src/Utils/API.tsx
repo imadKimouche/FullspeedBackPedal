@@ -8,11 +8,12 @@ const objectToParam = (object: any) => {
 };
 
 export const API = {
-  post: (url: string, content: {}) => {
+  post: (url: string, content: {}, token = '') => {
     return fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
       },
       body: JSON.stringify(content),
     }).catch(err => {
@@ -20,12 +21,13 @@ export const API = {
       return err;
     });
   },
-  get: (url: string, content: null | {}) => {
-    var finalUrl : string = url;
-    if (content != null && Object.keys(content).length) {
-        url += '?' + objectToParam(content);
-    }
-    return fetch( finalUrl, { method: 'GET', }, ).catch(err => {
+  get: (url: string, content: {} = {}) => {
+    return fetch(
+      url + (Object.keys(content).length ? '?' + objectToParam(content) : ''),
+      {
+        method: 'GET',
+      },
+    ).catch(err => {
       console.log('ERROR:' + err);
       return err;
     });
@@ -34,6 +36,8 @@ export const API = {
   url_insects: base_url + '/insects',
   url_me: base_url + '/me',
   url_register: base_url + '/user/register',
+  url_insectAll: base_url + '/insectAll/',
+  url_addImage: base_url + '/image/add',
 };
 
 export interface LoginType {
@@ -51,10 +55,3 @@ export interface InsectType {
   threatlevel: number;
   picture: string;
 }
-
-export interface InsectType {
-    id: number;
-    name: string;
-    threatlevel: number;
-    picture: string;
-  }
