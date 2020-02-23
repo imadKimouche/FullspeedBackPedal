@@ -1,7 +1,7 @@
 import React from 'react';
 import {Store, RootState} from '../store/configureStore';
 import {useSelector} from 'react-redux';
-import {start, UserInfo} from '../store/actions/userActions';
+import {start} from '../store/actions/userActions';
 import {CreateRootNavigator} from './CreateRootNavigator';
 
 const RootNavigator = () => {

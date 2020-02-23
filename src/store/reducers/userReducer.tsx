@@ -6,24 +6,13 @@ import {
   UserInfoActionType,
   UserInfo,
 } from '../actions/userActions';
-import AsyncStorage from '@react-native-community/async-storage';
+import {setAsyncItem, getAsyncItem} from '../../Utils/Utility';
 
 type SliceState = {userInfo: UserInfo};
 
-const getAsyncToken = async (): Promise<string | null> => {
-  try {
-    const userToken = await AsyncStorage.getItem('userToken');
-    //decrypt [TODO]
-    return userToken;
-  } catch (error) {
-    console.log('Login reducer error: ' + error);
-  }
-  return null;
-};
-
 const userInfoReducer = (state: SliceState, action: UserInfoActionType) => {
-  console.log('user information: ', state.userInfo);
   state.userInfo.token = action.payload.token;
+  setAsyncItem('token', action.payload.token);
   state.userInfo.id = action.payload.id;
   state.userInfo.username = action.payload.username;
   state.userInfo.email = action.payload.email;
@@ -31,19 +20,21 @@ const userInfoReducer = (state: SliceState, action: UserInfoActionType) => {
 };
 
 const startReducer = (state: SliceState) => {
-  let userToken = getAsyncToken();
+  let userToken = getAsyncItem('token');
   if (userToken !== null) {
-    userToken.then(token => (state.userInfo.token = token as string));
+    userToken
+      .then(token => {
+        return (state.userInfo.token = token);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 };
 
 const logoutReducer = (state: SliceState) => {
   state.userInfo.token = '';
 };
-
-//login {
-// asyncstorage.setitem(usertoken: token) [TODO]
-// }
 
 const userReducer = createReducer(
   {
