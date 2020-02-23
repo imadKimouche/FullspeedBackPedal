@@ -1,4 +1,4 @@
-# FullspeedBackPedal
+# FullspeedBackPedal (What Bit Me)
 This is the project behind the app [What Bit Me](https://play.google.com/store/apps?hl=fr).
 
 What Bit Me uses the [What Bit me API](https://imadkimouche.github.io/whatBitMeApiV2/).
