@@ -10,7 +10,6 @@ import Colors from '../Utils/Colors';
 
 const CustomHeader = ({navigation} : {navigation:NavigationStackProp}) => {
   const title = navigation.state.params?.info.name;
-  console.log("AAAAAA:",title)
   return (
     <View style={styles.header}>
       <View style={styles.button}>
