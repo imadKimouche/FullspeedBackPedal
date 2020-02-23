@@ -1,10 +1,12 @@
 import React, {PureComponent} from 'react';
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {StyleSheet, Text, ScrollView, View, FlatList} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {API, InsectType} from '../Utils/API';
 import BugsCard from '../Components/BugsCard';
+import BugDetails from '../Components/BugDetails';
 import Colors from '../Utils/Colors';
 import * as Animatable from 'react-native-animatable';
+import { SCREEN_WIDTH, SCREEN_HEIGHT } from '../Utils/Utility';
 
 interface IState {
   isLoading: boolean;
@@ -67,19 +69,28 @@ export default class Glossary extends PureComponent<null, IState> {
             </Animatable.View>
           <Text  style={styles.heading}>Insectes</Text>
         </Animatable.View>
-        <FlatList
-          keyExtractor={(item : InsectType) => item.name}
-          data={ insectList }
-          renderItem={({item, index} : {item : InsectType, index: number}) => {
-            return <BugsCard 
-              picture={item.picture}
-              title={item.name}
-              index={index}
-              onClick={this.onInsectClick}
-              animation={page === "Cards" ? "bounceInLeft" : "fadeOutLeft"}
-              duration={page === "Cards" ? 2000 : 700}/>;
-          }}
-        />
+        <View>
+          <FlatList
+            style={styles.cardElement}
+            keyExtractor={(item : InsectType) => item.name}
+            data={ insectList }
+            renderItem={({item, index} : {item : InsectType, index: number}) => {
+              return <BugsCard 
+                picture={item.picture}
+                title={item.name}
+                index={index}
+                onClick={this.onInsectClick}
+                animation={page === "Cards" ? "bounceInLeft" : "fadeOutLeft"}
+                duration={page === "Cards" ? 2000 : 700}/>;
+            }}
+          />
+          <ScrollView
+            style={styles.detailsElement} >
+            <BugDetails title="Symptoms" list={[]} index={1} />
+            <BugDetails title="Treatments" list={[]} index={2} />
+            <BugDetails title="How to avoid" list={[]} index={3} />
+          </ScrollView>
+        </View>
       </View>
     );
   }
@@ -103,4 +114,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 22,
   },
+  cardElement: {
+    position: "absolute",
+    width: SCREEN_WIDTH,
+  },
+  detailsElement: {
+    position: "absolute",
+    width: SCREEN_WIDTH,
+  }
 });

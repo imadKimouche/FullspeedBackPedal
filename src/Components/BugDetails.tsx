@@ -10,10 +10,13 @@ interface IData {
 
 interface IProps {
   title: string;
+  index: number;
+  animation?: string;
+  duration?: number;
   list: IData[];
 }
 
-const BugsCard = (props: IProps) => {
+const BugDetails = (props: IProps) => {
   const { title, list } = props;
   return (
       <Animatable.View animation="bounceInRight" duration={2000} style={styles.container}>
@@ -35,11 +38,11 @@ const BugsCard = (props: IProps) => {
   );
 };
 
-export default BugsCard;
+export default BugDetails;
 
 const styles = StyleSheet.create({
   container: {
-      height: 60,
+      height: 200,
       marginHorizontal: 10,
       marginTop: 10,
       backgroundColor: Colors.secondary,
