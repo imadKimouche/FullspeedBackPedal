@@ -18,7 +18,7 @@ const BugsCard = (props: IProps) => {
     <TouchableNativeFeedback
       key={title}
       onPress={()=>{onClick(index)}} >
-      <Animatable.View animation="bounceInLeft" duration={2000} style={styles.container}>
+      <Animatable.View key={title} animation="bounceInLeft" duration={2000} style={styles.container}>
         <View style={styles.leftPart}>
           <View style={{ marginLeft: 15 }}>
             <Avatar rounded

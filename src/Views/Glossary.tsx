@@ -4,6 +4,7 @@ import {
   Text,
   View,
   ScrollView,
+  FlatList,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { API, InsectType } from '../Utils/API';
@@ -48,27 +49,25 @@ export default class Glossary extends PureComponent<null, IState> {
     });
   }
 
-  renderListCards() {
-    const { insectList } = this.state;
-    return insectList.map((insect : InsectType, index : number) => {
-      return <BugsCard picture={insect.picture} title={insect.name} index={index} onClick={this.onInsectClick} />;
-    });
-  }
-
   onInsectClick = (index : number) => {
     console.log("Click on" + index);
   }
 
   render() {
+    const { insectList } = this.state;
     return (
       <View style={styles.container}>
         <Animatable.View animation="bounceIn" duration={600} style={styles.headerContainer}>
           <Icon color={Colors.primaryText} name="bug" type="font-awesome" size={62} />
           <Text style={styles.heading}>Insectes</Text>
         </Animatable.View>
-        <ScrollView pagingEnabled decelerationRate={0.993}>
-        { this.renderListCards()}
-        </ScrollView>
+        <FlatList
+          keyExtractor={(item : InsectType) => item.name}
+          data={ insectList }
+          renderItem={({item, index} : {item : InsectType, index: number}) => {
+            return <BugsCard picture={item.picture} title={item.name} index={index} onClick={this.onInsectClick} />;
+          }}
+        />
       </View>
     );
   }
