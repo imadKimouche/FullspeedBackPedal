@@ -1,7 +1,7 @@
 const base_url = 'https://safe-anchorage-52970.herokuapp.com/api';
 
 const objectToParam = (object: any) => {
-  var listParam: string[] = Object.keys(object).map(
+  let listParam: string[] = Object.keys(object).map(
     key => `${key}=${object[key]}`,
   );
   return listParam.join('&');

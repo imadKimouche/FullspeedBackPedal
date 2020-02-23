@@ -23,7 +23,7 @@ interface IProps {
 }
 
 const BugView = (props : IProps) => {
-  var info : BugInfo = props.navigation.state.params.info;
+  let info : BugInfo = props.navigation.state.params.info;
   return (
       <ScrollView style={styles.container}>
           <Animatable.View

@@ -41,7 +41,7 @@ class Glossary extends PureComponent<IProps, IState> {
 
   _handleResponse = (id: number, name: string, picture: string, response: Response) => {
     response.json().then(responseJson => {
-      var info : BugInfo = {
+      let info : BugInfo = {
         id: id,
         name: name,
         picture: picture,
@@ -83,7 +83,8 @@ class Glossary extends PureComponent<IProps, IState> {
   _apiResponse = (response: Response) => {
     response.json().then((responseJSON: InsectType[]) => {
       responseJSON.forEach(element => {
-        API.get(API.url_insectAll + element.id).then(response => {
+        let toBddConv : number = element.id - 1;
+        API.get(API.url_insectAll + toBddConv).then(response => {
           this._handleResponse(element.id, element.name, element.picture, response);
         });
       });
