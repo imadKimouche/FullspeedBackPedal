@@ -193,7 +193,6 @@ const styles = StyleSheet.create({
     height: 45
   },
   logoutButtonText: {
-    fontFamily: 'UbuntuBold',
     fontSize: 13
   }
 });

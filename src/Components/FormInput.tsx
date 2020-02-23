@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     color: Colors.black,
-    fontFamily: 'UbuntuLight',
     fontSize: 16
   },
   errorInputStyle: {

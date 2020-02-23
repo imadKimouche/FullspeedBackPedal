@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, TouchableNativeFeedback} from 'react-native';
+import {Text, View, TouchableOpacity} from 'react-native';
 import {Avatar, Icon} from 'react-native-elements';
 import {StyleSheet} from 'react-native';
 import Colors from '../Utils/Colors';
@@ -23,7 +23,7 @@ const BugsCard = ({
   duration = 2000
 }: IProps) => {
   return (
-    <TouchableNativeFeedback
+    <TouchableOpacity
       key={title}
       onPress={() => {
         onClick(title);
@@ -51,7 +51,8 @@ const BugsCard = ({
           />
         </View>
       </Animatable.View>
-    </TouchableNativeFeedback>
+      TouchableOpacity
+    </TouchableOpacity>
   );
 };
 
@@ -70,7 +71,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   title: {
-    fontFamily: 'regular',
     fontSize: 15,
     marginLeft: 10,
     color: Colors.black
