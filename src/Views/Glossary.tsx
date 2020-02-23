@@ -1,112 +1,82 @@
-import React, {Component} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-} from 'react-native';
-import { Avatar, Icon } from 'react-native-elements';
+import React, {PureComponent} from 'react';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {Icon} from 'react-native-elements';
+import {API, InsectType} from '../Utils/API';
+import BugsCard from '../Components/BugsCard';
 import Colors from '../Utils/Colors';
+import * as Animatable from 'react-native-animatable';
 
-const USERS = [
-  {
-    name: 'Moustique',
-    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
-    value: 0,
-  },
-  {
-    name: 'Pokémon',
-    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
-    value: 1,
-  },
-  {
-    name: 'Imad Kimouche',
-    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/evagiselle/128.jpg',
-    value: 2,
-  },
-]
+interface IState {
+  isLoading: boolean;
+  insectList: InsectType[];
+}
 
-export default class Glossary extends Component {
+export default class Glossary extends PureComponent<null, IState> {
+  state: IState = {
+    isLoading: true,
+    insectList: [],
+  };
 
-  renderCard(user : {name: string, avatar: string, value: number}, index : number) {
-    const { name, avatar, value } = user;
-
-    return (
-      <View
-        key={index}
-        style={{
-          height: 60,
-          marginHorizontal: 10,
-          marginTop: 10,
-          backgroundColor: 'white',
-          borderRadius: 5,
-          alignItems: 'center',
-          flexDirection: 'row',
-          borderBottomWidth: 2,
-          borderBottomColor: (value >= 1 ) ? (value >= 2 ) ? 'rgba(222,100,100,0.7)' : 'rgba(222,222,100,0.7)' : 'rgba(100,222,100,0.7)',
-        }}
-      >
-        <View style={{ flex: 2, flexDirection: 'row', alignItems: 'center' }}>
-          <View style={{ marginLeft: 15 }}>
-            <Avatar
-              rounded
-              source={{
-                uri: avatar,
-              }}
-              activeOpacity={0.7}
-            />
-          </View>
-          <Text
-            style={{
-              fontFamily: 'regular',
-              fontSize: 15,
-              marginLeft: 10,
-              color: 'gray',
-            }}
-          >
-            {name}
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginRight: 10,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: 'rgba(222,222,222,1)',
-              width: 35,
-              height: 28,
-              borderRadius: 5,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginHorizontal: 10,
-            }}
-          >
-            <Icon name="angle-right" type="font-awesome" color="gray" size={20} />
-          </View>
-        </View>
-      </View>
-    );
+  componentDidMount() {
+    this._requestInsects();
   }
+
+  _requestInsects = () => {
+    API.get(`${API.url_insects}`)
+      .then((response: Response) => {
+        this.setState({isLoading: false});
+        return this._apiResponse(response);
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          isLoading: false,
+        });
+        return err;
+      });
+  };
+
+  _apiResponse = (response: Response) => {
+    response.json().then((responseJSON: InsectType[]) => {
+      this.setState({insectList: responseJSON});
+    });
+  };
 
   renderListCards() {
-    return USERS.map((user: {name: string, avatar: string, value: number}, index : number) => {
-      return this.renderCard(user, index);
+    const {insectList} = this.state;
+    return insectList.map((insect: InsectType, index: number) => {
+      return (
+        <BugsCard
+          picture={insect.picture}
+          title={insect.name}
+          index={index}
+          onClick={this.onInsectClick}
+        />
+      );
     });
   }
+
+  onInsectClick = (index: number) => {
+    console.log('Click on' + index);
+  };
 
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <Icon color="white" name="bug" type="font-awesome" size={62} />
+        <Animatable.View
+          animation="bounceIn"
+          duration={600}
+          style={styles.headerContainer}>
+          <Icon
+            color={Colors.primaryText}
+            name="bug"
+            type="font-awesome"
+            size={62}
+          />
           <Text style={styles.heading}>Insectes</Text>
-        </View>
+        </Animatable.View>
         <ScrollView pagingEnabled decelerationRate={0.993}>
-        { this.renderListCards()}
+          {this.renderListCards()}
         </ScrollView>
       </View>
     );
@@ -116,18 +86,15 @@ export default class Glossary extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  list: {
-    marginTop: 20,
-    borderTopWidth: 1,
-    borderColor: 'grey',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.secondary,
   },
   headerContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     padding: 40,
-    backgroundColor: 'rgba(70,130,200,0.7)',
+    backgroundColor: Colors.secondaryLight,
+    borderBottomWidth: 0.8,
+    borderBottomColor: Colors.pink,
   },
   heading: {
     color: 'white',
