@@ -2,6 +2,7 @@ import React from 'react';
 import {View, StyleSheet, Text, FlatList, Animated} from 'react-native';
 import Colors from '../../Utils/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {SCREEN_WIDTH} from '../../Utils/Utility';
 
 interface IData {
   id: number;
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: Colors.white,
     borderRadius: 10,
+    maxWidth: SCREEN_WIDTH * 0.9,
   },
   title: {
     color: Colors.secondaryLight,

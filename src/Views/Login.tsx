@@ -72,11 +72,15 @@ class Login extends PureComponent<null, IState> {
   }
 
   componentDidMount() {
-    getAsyncItem('email').then(item => {
-      if (item !== null) {
-        this.setState({email: item});
-      }
-    });
+    getAsyncItem('email')
+      .then(item => {
+        if (item !== null) {
+          this.setState({email: item});
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   register = () => {
@@ -118,29 +122,34 @@ class Login extends PureComponent<null, IState> {
   };
 
   _apiResponse = (response: Response) => {
-    response.json().then((responseJSON: LoginType) => {
-      if (
-        response.status >= 200 &&
-        response.status < 300 &&
-        responseJSON.token != null
-      ) {
-        Store.dispatch(
-          userInfo({
-            id: responseJSON.id,
-            username: responseJSON.username,
-            email: responseJSON.email,
-            creation_date: responseJSON.creation_date,
-            token: responseJSON.token,
-          }),
-        );
-        //this.setState({isLoading: false});
-      } else {
-        this.setState({
-          isLoading: false,
-          apiResponse: responseJSON.message ? responseJSON.message : '',
-        });
-      }
-    });
+    response
+      .json()
+      .then((responseJSON: LoginType) => {
+        if (
+          response.status >= 200 &&
+          response.status < 300 &&
+          responseJSON.token != null
+        ) {
+          Store.dispatch(
+            userInfo({
+              id: responseJSON.id,
+              username: responseJSON.username,
+              email: responseJSON.email,
+              creation_date: responseJSON.creation_date,
+              token: responseJSON.token,
+            }),
+          );
+          //this.setState({isLoading: false});
+        } else {
+          this.setState({
+            isLoading: false,
+            apiResponse: responseJSON.message ? responseJSON.message : '',
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   validateEmail = () => {
