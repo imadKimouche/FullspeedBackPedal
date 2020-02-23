@@ -8,11 +8,12 @@ const objectToParam = (object: any) => {
 };
 
 export const API = {
-  post: (url: string, content: {}) => {
+  post: (url: string, content: {}, token = '') => {
     return fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
       },
       body: JSON.stringify(content),
     }).catch(err => {
@@ -20,7 +21,7 @@ export const API = {
       return err;
     });
   },
-  get: (url: string, content: {}) => {
+  get: (url: string, content: {} = {}) => {
     return fetch(
       url + (Object.keys(content).length ? '?' + objectToParam(content) : ''),
       {
@@ -35,6 +36,8 @@ export const API = {
   url_insects: base_url + '/insects',
   url_me: base_url + '/me',
   url_register: base_url + '/user/register',
+  url_insectAll: base_url + '/insectAll/',
+  url_addImage: base_url + '/image/add',
 };
 
 export interface LoginType {

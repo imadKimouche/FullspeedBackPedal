@@ -6,8 +6,10 @@ import {
   PanResponderInstance,
   GestureResponderEvent,
   PanResponderGestureState,
-  Animated,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
+import {connect} from 'react-redux';
 import {Text, Image} from 'react-native-animatable';
 import {NavigationScreenProp} from 'react-navigation';
 
@@ -16,9 +18,14 @@ import {Images} from '../Utils/Images';
 import {SCREEN_WIDTH} from '../Utils/Utility';
 import InfoCard from '../Components/Preview/InfoCard';
 import BugIndicator from '../Components/BugIndicator';
+import {API} from '../Utils/API';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {RootState} from '../store/rootReducer';
 
 interface IProps {
   navigation: NavigationScreenProp<any, any>;
+  token: string;
+  userId: string;
 }
 
 interface IData {
@@ -30,15 +37,15 @@ interface IState {
   dataReady: boolean;
   valueX: number;
 }
-
-export default class ScanResult extends Component<IProps, IState> {
+class ScanResult extends Component<IProps, IState> {
   insectId: number;
   predictionLabel: string;
-  API_URL: string = 'https://safe-anchorage-52970.herokuapp.com';
   labels = [1, 2, 3, 4, 5, 0];
   symptoms: IData[] = [];
   treatments: IData[] = [];
   avoids: IData[] = [];
+  base64: string = this.props.navigation.state.params.base64;
+  timestamp: string = this.props.navigation.state.params.timestamp;
 
   private _panResponder: PanResponderInstance;
 
@@ -89,12 +96,9 @@ export default class ScanResult extends Component<IProps, IState> {
 
   componentDidMount() {
     this.setState({dataReady: false});
-    fetch(`${this.API_URL}/api/insectAll/${this.insectId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(response => this._handleResponse(response));
+    API.get(API.url_insectAll + this.insectId).then(response => {
+      this._handleResponse(response);
+    });
   }
 
   _handleResponse = (response: Response) => {
@@ -114,6 +118,24 @@ export default class ScanResult extends Component<IProps, IState> {
       return {id: index, text: item[type]};
     });
   }
+
+  _handleValidate = () => {
+    API.post(
+      API.url_addImage,
+      {
+        userId: this.props.userId,
+        data: this.base64,
+        timestamp: this.timestamp,
+      },
+      this.props.token,
+    ).then(response => {
+      if (response.status == 200) {
+        this.props.navigation.navigate('Scanner');
+      } else if (response.status == 400) {
+        Alert.alert('Oops!', 'Image could not be added');
+      }
+    });
+  };
 
   render() {
     return (
@@ -178,10 +200,28 @@ export default class ScanResult extends Component<IProps, IState> {
             },
           ]}
         />
+        <TouchableOpacity
+          style={styles.validateButton}
+          onPress={() => {
+            this._handleValidate();
+          }}>
+          <Icon name="md-checkmark" size={20} color={Colors.white} />
+        </TouchableOpacity>
       </View>
     );
   }
 }
+
+const mapStateToProps = function(state: RootState) {
+  return {
+    token: state.userReducer.userInfo.token,
+    userId: state.userReducer.userInfo.id,
+  };
+};
+
+const ScanResultConnected = connect(mapStateToProps)(ScanResult);
+
+export default ScanResultConnected;
 
 const styles = StyleSheet.create({
   container: {
@@ -228,5 +268,16 @@ const styles = StyleSheet.create({
     borderColor: Colors.pink,
     position: 'absolute',
     bottom: 15,
+  },
+  validateButton: {
+    width: SCREEN_WIDTH * 0.14,
+    height: SCREEN_WIDTH * 0.14,
+    borderRadius: (SCREEN_WIDTH * 0.14) / 2,
+    backgroundColor: Colors.pink,
+    bottom: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: 15,
   },
 });

@@ -6,6 +6,7 @@ import * as Animatable from 'react-native-animatable';
 
 import ProgressCircle from '../Components/ProgressCircle';
 import Colors from '../Utils/Colors';
+import {SCREEN_HEIGHT} from '../Utils/Utility';
 
 interface IProps {
   navigation: NavigationScreenProp<any, any>;
@@ -37,7 +38,11 @@ export default class ImagePreview extends React.Component<IProps, IState> {
       .json()
       .then(responseJson => {
         this.setState({loading: false, dataSource: {responseJson}});
-        this.props.navigation.navigate('ScanResult', {response: responseJson});
+        this.props.navigation.navigate('ScanResult', {
+          response: responseJson,
+          base64: this.base64,
+          timestamp: this.props.navigation.state.params.timestamp,
+        });
       })
       .catch(err => {
         this.setState({loading: false});
@@ -47,7 +52,6 @@ export default class ImagePreview extends React.Component<IProps, IState> {
 
   _scanPicture = async () => {
     this.setState({loading: true});
-    console.log('Clicking....');
     fetch(this.API_URL + '/api/predict', {
       method: 'POST',
       headers: {
@@ -82,6 +86,15 @@ export default class ImagePreview extends React.Component<IProps, IState> {
             color={this.state.loading ? Colors.pink : Colors.black}
           />
         </TouchableOpacity>
+        {this.state.loading && (
+          <Animatable.Text
+            style={styles.middleText}
+            animation="pulse"
+            iterationDelay={1000}
+            iterationCount="infinite">
+            Analyzing...
+          </Animatable.Text>
+        )}
       </ImageBackground>
     );
   }
@@ -107,5 +120,10 @@ const styles = StyleSheet.create({
     bottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  middleText: {
+    position: 'absolute',
+    top: SCREEN_HEIGHT / 2,
+    color: Colors.white,
   },
 });
