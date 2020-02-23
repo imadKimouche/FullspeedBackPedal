@@ -8,21 +8,21 @@ const ScannerNavigatorContent = createStackNavigator({
   Scanner: {
     screen: Scanner,
     navigationOptions: {
-      header: () => null,
-    },
+      header: () => null
+    }
   },
   ImagePreview: {
     screen: ImagePreview,
     navigationOptions: {
-      header: () => null,
-    },
+      header: () => null
+    }
   },
   ScanResult: {
     screen: ScanResult,
     navigationOptions: {
-      header: () => null,
-    },
-  },
+      header: () => null
+    }
+  }
 });
 
 const ScannerNavigator = createAppContainer(ScannerNavigatorContent);

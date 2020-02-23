@@ -37,20 +37,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.secondaryText,
     height: 45,
-    marginVertical: 10,
+    marginVertical: 10
   },
   inputStyle: {
     flex: 1,
     marginLeft: 10,
     color: Colors.black,
     fontFamily: 'UbuntuLight',
-    fontSize: 16,
+    fontSize: 16
   },
   errorInputStyle: {
     marginTop: 0,
     textAlign: 'center',
-    color: Colors.danger,
-  },
+    color: Colors.danger
+  }
 });
 
 export default FormInput;

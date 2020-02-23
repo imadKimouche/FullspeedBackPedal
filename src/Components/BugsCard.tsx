@@ -14,12 +14,26 @@ interface IProps {
   onClick: (name: string) => void;
 }
 
-const BugsCard = ({picture, title, index, onClick, animation, duration = 2000} : IProps) => {
+const BugsCard = ({
+  picture,
+  title,
+  index,
+  onClick,
+  animation,
+  duration = 2000
+}: IProps) => {
   return (
     <TouchableNativeFeedback
       key={title}
-      onPress={()=>{onClick(title)}} >
-      <Animatable.View key={title}  delay={index * 200} animation={animation} duration={duration} style={styles.container}>
+      onPress={() => {
+        onClick(title);
+      }}>
+      <Animatable.View
+        key={title}
+        delay={index * 200}
+        animation={animation}
+        duration={duration}
+        style={styles.container}>
         <View style={styles.leftPart}>
           <View style={{marginLeft: 15}}>
             <Avatar rounded source={{uri: picture}} activeOpacity={0.7} />
@@ -53,18 +67,18 @@ const styles = StyleSheet.create({
     borderColor: Colors.secondaryLight,
     borderRadius: 5,
     alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   title: {
     fontFamily: 'regular',
     fontSize: 15,
     marginLeft: 10,
-    color: Colors.black,
+    color: Colors.black
   },
   leftPart: {
     flex: 2,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   rightPartButton: {
     backgroundColor: Colors.white,
@@ -73,6 +87,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 10,
-  },
+    marginHorizontal: 10
+  }
 });

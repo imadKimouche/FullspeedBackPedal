@@ -9,7 +9,7 @@ const Images = {
   wasp: require('../../assets/images/wasp.png'),
   poro_1: require('../../assets/images/poro1.png'),
   poro_2: require('../../assets/images/poro2.png'),
-  poro_3: require('../../assets/images/poro3.png'),
+  poro_3: require('../../assets/images/poro3.png')
 };
 
 export {Images};

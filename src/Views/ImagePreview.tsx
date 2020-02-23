@@ -29,7 +29,7 @@ export default class ImagePreview extends React.Component<IProps, IState> {
     this.base64 = this.props.navigation.state.params.base64;
     this.state = {
       loading: false,
-      dataSource: {},
+      dataSource: {}
     };
   }
 
@@ -41,7 +41,7 @@ export default class ImagePreview extends React.Component<IProps, IState> {
         this.props.navigation.navigate('ScanResult', {
           response: responseJson,
           base64: this.base64,
-          timestamp: this.props.navigation.state.params.timestamp,
+          timestamp: this.props.navigation.state.params.timestamp
         });
       })
       .catch(err => {
@@ -55,11 +55,11 @@ export default class ImagePreview extends React.Component<IProps, IState> {
     fetch(this.API_URL + '/api/predict', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        base64: this.base64,
-      }),
+        base64: this.base64
+      })
     }).then(response => this._handleResponse(response));
   };
 
@@ -104,12 +104,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.black,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   icon: {
     position: 'absolute',
     top: 10,
-    left: 10,
+    left: 10
   },
   scanButton: {
     backgroundColor: '#fefffa',
@@ -119,11 +119,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     bottom: 10,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   middleText: {
     position: 'absolute',
     top: SCREEN_HEIGHT / 2,
-    color: Colors.white,
-  },
+    color: Colors.white
+  }
 });

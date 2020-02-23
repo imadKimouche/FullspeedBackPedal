@@ -19,7 +19,7 @@ const RoundButton: FC<IProps> = ({name, size, color, pressHandler}) => {
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',
-      bottom: 10,
+      bottom: 10
     };
   };
 

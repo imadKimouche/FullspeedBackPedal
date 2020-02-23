@@ -1,12 +1,16 @@
 import React, {PureComponent} from 'react';
 import {StyleSheet, Text, View, FlatList} from 'react-native';
 import {Icon} from 'react-native-elements';
-import {API, InsectType,IData} from '../Utils/API';
+import {API, InsectType, IData} from '../Utils/API';
 import BugsCard from '../Components/BugsCard';
 import Colors from '../Utils/Colors';
 import * as Animatable from 'react-native-animatable';
-import {withNavigationFocus, NavigationScreenProp, StackActions} from 'react-navigation';
-import { SCREEN_WIDTH } from '../Utils/Utility';
+import {
+  withNavigationFocus,
+  NavigationScreenProp,
+  StackActions
+} from 'react-navigation';
+import {SCREEN_WIDTH} from '../Utils/Utility';
 
 interface BugInfo {
   id: number;
@@ -36,12 +40,17 @@ class Glossary extends PureComponent<IProps, IState> {
     isLoading: true,
     insectList: [],
     showCard: true,
-    dataReady: false,
+    dataReady: false
   };
 
-  _handleResponse = (id: number, name: string, picture: string, response: Response) => {
+  _handleResponse = (
+    id: number,
+    name: string,
+    picture: string,
+    response: Response
+  ) => {
     response.json().then(responseJson => {
-      let info : BugInfo = {
+      let info: BugInfo = {
         id: id,
         name: name,
         picture: picture,
@@ -54,7 +63,7 @@ class Glossary extends PureComponent<IProps, IState> {
     });
   };
 
-  _normalizeData(data: {id: number; text: string}[], type: string) : IData[] {
+  _normalizeData(data: {id: number; text: string}[], type: string): IData[] {
     return data.map((item: {id: number; text: string}, index: number) => {
       return {id: index, text: item[type]};
     });
@@ -74,7 +83,7 @@ class Glossary extends PureComponent<IProps, IState> {
         console.log(err);
         this.setState({
           isLoading: false,
-          showCard: true,
+          showCard: true
         });
         return err;
       });
@@ -83,60 +92,78 @@ class Glossary extends PureComponent<IProps, IState> {
   _apiResponse = (response: Response) => {
     response.json().then((responseJSON: InsectType[]) => {
       responseJSON.forEach(element => {
-        let toBddConv : number = element.id - 1;
+        let toBddConv: number = element.id - 1;
         API.get(API.url_insectAll + toBddConv).then(response => {
-          this._handleResponse(element.id, element.name, element.picture, response);
+          this._handleResponse(
+            element.id,
+            element.name,
+            element.picture,
+            response
+          );
         });
       });
       this.setState({insectList: responseJSON});
     });
   };
 
-  onInsectClick = (name : string) => {
+  onInsectClick = (name: string) => {
     this.setState({showCard: false});
-    setTimeout(()=>{
+    setTimeout(() => {
       this.setState({showCard: true});
       const pushAction = StackActions.push({
         routeName: 'BugView',
         params: {
-          info: this.insectsData.find(e => e.name === name),
-        },
+          info: this.insectsData.find(e => e.name === name)
+        }
       });
       this.props.navigation.dispatch(pushAction);
-    }, 700);
-  }
+    }, 200);
+  };
 
   render() {
-    const { insectList, showCard} = this.state;
+    const {insectList, showCard} = this.state;
     return (
       <View style={styles.container}>
-        <Animatable.View
-            animation="fadeInDown" 
-            style={styles.headerContainer}>
-            <Animatable.View
-              animation="pulse" easing="ease-out" iterationCount="infinite" >
-              <Icon
-                color={Colors.primaryText}
-                name="bug"
-                type="font-awesome"
-                size={62}
-              />
-            </Animatable.View>
-          <Text style={styles.heading}>Bugs</Text>
+        <Animatable.View animation="fadeInDown" style={styles.headerContainer}>
+          <Animatable.View
+            animation="pulse"
+            easing="ease-out"
+            iterationCount="infinite">
+            <Icon
+              color={Colors.primaryText}
+              name="bug"
+              type="font-awesome"
+              size={62}
+            />
+          </Animatable.View>
+          <Text style={styles.heading}>Insects</Text>
         </Animatable.View>
         <View style={{flex: 1}}>
           <FlatList
             style={styles.cardElement}
-            keyExtractor={(item : InsectType) => item.name}
-            data={ insectList }
-            renderItem={({item, index} : {item : InsectType, index: number}) => {
-              return <BugsCard 
-                picture={item.picture}
-                title={item.name}
-                index={index}
-                onClick={this.onInsectClick}
-                animation={showCard && this.props.navigation.state.routeName === "Glossary" ? "bounceInLeft" : "fadeOutLeft"}
-                duration={showCard && this.props.navigation.state.routeName === "Glossary" ? 2000 : 700}/>;
+            keyExtractor={(item: InsectType) => item.name}
+            data={insectList}
+            renderItem={({item, index}: {item: InsectType; index: number}) => {
+              return (
+                <BugsCard
+                  picture={item.picture}
+                  title={item.name}
+                  index={index}
+                  onClick={this.onInsectClick}
+                  animation={
+                    showCard &&
+                    this.props.navigation.state.routeName === 'Glossary'
+                      ? 'bounceInLeft'
+                      : 'fadeOutLeft'
+                  }
+                  duration={
+                    showCard &&
+                    this.props.navigation.state.routeName === 'Glossary'
+                      ? 1500
+                      : 130
+                  }
+                />
+              );
             }}
           />
         </View>
@@ -145,12 +172,12 @@ class Glossary extends PureComponent<IProps, IState> {
   }
 }
 
-export default withNavigationFocus(Glossary)
+export default withNavigationFocus(Glossary);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.secondary
   },
   headerContainer: {
     justifyContent: 'center',
@@ -158,20 +185,20 @@ const styles = StyleSheet.create({
     padding: 40,
     backgroundColor: Colors.secondaryLight,
     borderBottomWidth: 0.8,
-    borderBottomColor: Colors.black,
+    borderBottomColor: Colors.black
   },
   heading: {
     color: 'white',
     marginTop: 10,
-    fontSize: 22,
+    fontSize: 22
   },
   cardElement: {
-    position: "absolute",
-    width: SCREEN_WIDTH,
+    position: 'absolute',
+    width: SCREEN_WIDTH
   },
   detailsElement: {
-    position: "absolute",
+    position: 'absolute',
     width: SCREEN_WIDTH,
-    backgroundColor: 'red',
+    backgroundColor: 'red'
   }
 });

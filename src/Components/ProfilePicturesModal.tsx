@@ -4,7 +4,7 @@ import {
   Image,
   View,
   FlatList,
-  TouchableOpacity,
+  TouchableOpacity
 } from 'react-native';
 import Modal from 'react-native-modal';
 
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
+    borderRadius: 10
   },
   profilePicture: {
     width: SCREEN_WIDTH * 0.2,
@@ -73,23 +73,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     marginLeft: 10,
-    marginRight: 10,
+    marginRight: 10
   },
   image: {
     width: SCREEN_WIDTH * 0.22,
     height: SCREEN_WIDTH * 0.22,
     borderRadius: Math.round(SCREEN_WIDTH * 0.22) / 2,
-    alignSelf: 'center',
+    alignSelf: 'center'
   },
   title: {
     marginTop: 20,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   closeButton: {
     position: 'absolute',
     top: 10,
-    right: 15,
-  },
+    right: 15
+  }
 });
 
 export default ProfilePicturesModal;

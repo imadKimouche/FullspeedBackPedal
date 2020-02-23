@@ -2,7 +2,7 @@ const base_url = 'https://safe-anchorage-52970.herokuapp.com/api';
 
 const objectToParam = (object: any) => {
   let listParam: string[] = Object.keys(object).map(
-    key => `${key}=${object[key]}`,
+    key => `${key}=${object[key]}`
   );
   return listParam.join('&');
 };
@@ -13,9 +13,9 @@ export const API = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
+        Authorization: 'Bearer ' + token
       },
-      body: JSON.stringify(content),
+      body: JSON.stringify(content)
     }).catch(err => {
       console.log('ERROR:' + err);
       return err;
@@ -25,8 +25,8 @@ export const API = {
     return fetch(
       url + (Object.keys(content).length ? '?' + objectToParam(content) : ''),
       {
-        method: 'GET',
-      },
+        method: 'GET'
+      }
     ).catch(err => {
       console.log('ERROR:' + err);
       return err;
@@ -37,7 +37,7 @@ export const API = {
   url_me: base_url + '/me',
   url_register: base_url + '/user/register',
   url_insectAll: base_url + '/insectAll/',
-  url_addImage: base_url + '/image/add',
+  url_addImage: base_url + '/image/add'
 };
 
 export interface LoginType {

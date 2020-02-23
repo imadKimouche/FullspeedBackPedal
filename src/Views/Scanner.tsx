@@ -4,7 +4,7 @@ import {
   Platform,
   StyleSheet,
   TouchableOpacity,
-  Alert,
+  Alert
 } from 'react-native';
 import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 import {RNCamera} from 'react-native-camera';
@@ -42,7 +42,7 @@ class Scanner extends Component<IProps, IState> {
 
     this.state = {
       isCameraAvailable: true,
-      isTakingPicture: false,
+      isTakingPicture: false
     };
   }
 
@@ -99,7 +99,7 @@ class Scanner extends Component<IProps, IState> {
     this.props.navigation.navigate('ImagePreview', {
       uri: uri,
       base64: base64,
-      timestamp,
+      timestamp
     });
   };
 
@@ -108,7 +108,7 @@ class Scanner extends Component<IProps, IState> {
     this.setState({isTakingPicture: false});
     Alert.alert(
       'An Error Ocurred',
-      'There was a problem with the camera. Could not take the picture',
+      'There was a problem with the camera. Could not take the picture'
     );
   };
 
@@ -135,7 +135,7 @@ class Scanner extends Component<IProps, IState> {
                 onPress={() => {
                   this._takePicture()
                     .then((res: IResult) =>
-                      this._handleCapturedImage(res.uri, res.base64),
+                      this._handleCapturedImage(res.uri, res.base64)
                     )
                     .catch(err => this._handleCaptureError(err));
                 }}>
@@ -157,17 +157,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: Colors.black,
+    backgroundColor: Colors.black
   },
   cameraContainer: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: Colors.black,
+    backgroundColor: Colors.black
   },
   preview: {
     flex: 1,
     backgroundColor: Colors.black,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   snapButton: {
     backgroundColor: '#fefffa',
@@ -177,8 +177,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     bottom: 10,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 });
 
 export default withNavigationFocus(Scanner);

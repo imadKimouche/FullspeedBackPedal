@@ -20,8 +20,8 @@ const ProgressCircle = ({animating}: IProps) => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 0,
-  },
+    bottom: 0
+  }
 });
 
 export default ProgressCircle;

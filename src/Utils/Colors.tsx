@@ -12,7 +12,7 @@ const Colors = {
   black: '#000',
   pink: '#ff0077',
   danger: 'crimson',
-  signUp: '#293046',
+  signUp: '#293046'
 };
 
 export default Colors;

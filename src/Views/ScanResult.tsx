@@ -7,7 +7,7 @@ import {
   GestureResponderEvent,
   PanResponderGestureState,
   TouchableOpacity,
-  Alert,
+  Alert
 } from 'react-native';
 import {connect} from 'react-redux';
 import {Text, Image} from 'react-native-animatable';
@@ -58,7 +58,7 @@ class ScanResult extends Component<IProps, IState> {
       onPanResponderGrant: grantResponder,
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: responderMove,
+      onPanResponderMove: responderMove
     });
 
     this.insectId = this.labels[
@@ -66,25 +66,25 @@ class ScanResult extends Component<IProps, IState> {
     ];
     this.predictionLabel = this.props.navigation.state.params.response.predictionLabel.replace(
       /\s/g,
-      '',
+      ''
     );
 
     this.state = {
       dataReady: false,
-      valueX: 5,
+      valueX: 5
     };
   }
 
   private _grantResponder = (
     evt: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
+    gestureState: PanResponderGestureState
   ): void => {
     gestureState.dx = this.state.valueX;
   };
 
   private _handleResponderMove = (
     evt: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
+    gestureState: PanResponderGestureState
   ): void => {
     let valueX;
     if (gestureState.dx > 15) {
@@ -109,7 +109,7 @@ class ScanResult extends Component<IProps, IState> {
       this.symptoms = this._normalizeData(responseJson.symptoms, 'symptom');
       this.treatments = this._normalizeData(
         responseJson.treatments,
-        'treatment',
+        'treatment'
       );
       this.avoids = this._normalizeData(responseJson.avoids, 'avoid');
       this.setState({dataReady: true});
@@ -128,9 +128,9 @@ class ScanResult extends Component<IProps, IState> {
       {
         userId: this.props.userId,
         data: this.base64,
-        timestamp: this.timestamp,
+        timestamp: this.timestamp
       },
-      this.props.token,
+      this.props.token
     ).then(response => {
       if (response.status == 200) {
         this.props.navigation.navigate('Scanner');
@@ -177,8 +177,8 @@ class ScanResult extends Component<IProps, IState> {
             {
               left: SCREEN_WIDTH / 2 - 15,
               backgroundColor:
-                this.state.valueX > -300 ? Colors.secondaryLight : Colors.white,
-            },
+                this.state.valueX > -300 ? Colors.secondaryLight : Colors.white
+            }
           ]}
         />
         <View
@@ -189,8 +189,8 @@ class ScanResult extends Component<IProps, IState> {
               backgroundColor:
                 this.state.valueX < -300 && this.state.valueX > -600
                   ? Colors.secondaryLight
-                  : Colors.white,
-            },
+                  : Colors.white
+            }
           ]}
         />
         <View
@@ -199,8 +199,8 @@ class ScanResult extends Component<IProps, IState> {
             {
               left: SCREEN_WIDTH / 2 + 5,
               backgroundColor:
-                this.state.valueX < -600 ? Colors.secondaryLight : Colors.white,
-            },
+                this.state.valueX < -600 ? Colors.secondaryLight : Colors.white
+            }
           ]}
         />
         <TouchableOpacity
@@ -218,7 +218,7 @@ class ScanResult extends Component<IProps, IState> {
 const mapStateToProps = function(state: RootState) {
   return {
     token: state.userReducer.userInfo.token,
-    userId: state.userReducer.userInfo.id,
+    userId: state.userReducer.userInfo.id
   };
 };
 
@@ -228,12 +228,12 @@ export default ScanResultConnected;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   title: {
     alignSelf: 'center',
     fontSize: 22,
-    marginTop: 15,
+    marginTop: 15
   },
   imageContainer: {
     backgroundColor: Colors.white,
@@ -245,22 +245,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: Colors.secondaryLight,
+    borderColor: Colors.secondaryLight
   },
   image: {
-    width: SCREEN_WIDTH * 0.2,
+    width: SCREEN_WIDTH * 0.2
   },
   lists: {
     flex: 1,
     marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   icon: {
     alignSelf: 'center',
     position: 'absolute',
-    bottom: '30%',
+    bottom: '30%'
   },
   dot: {
     backgroundColor: Colors.white,
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.secondaryLight,
     position: 'absolute',
-    bottom: 15,
+    bottom: 15
   },
   validateButton: {
     width: SCREEN_WIDTH * 0.14,
@@ -281,6 +281,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    right: 15,
-  },
+    right: 15
+  }
 });

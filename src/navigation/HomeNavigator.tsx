@@ -19,7 +19,7 @@ const HomeNavigatorIcon = ({name, focused}: IProps) => {
       name={name}
       size={20}
       iconStyle={{
-        marginTop: 10,
+        marginTop: 10
       }}
       type="font-awesome"
       color={focused ? Colors.secondaryLight : 'grey'}
@@ -35,8 +35,8 @@ const TabNavigatorContent = createBottomTabNavigator(
         title: 'Glossaire',
         tabBarIcon: ({focused}) => (
           <HomeNavigatorIcon name="list-ul" focused={focused} />
-        ),
-      },
+        )
+      }
     },
     ScannerNavigator: {
       screen: ScannerNavigator,
@@ -44,8 +44,8 @@ const TabNavigatorContent = createBottomTabNavigator(
         title: 'Scanner',
         tabBarIcon: ({focused}) => (
           <HomeNavigatorIcon name="camera" focused={focused} />
-        ),
-      },
+        )
+      }
     },
     Account: {
       screen: Account,
@@ -53,15 +53,15 @@ const TabNavigatorContent = createBottomTabNavigator(
         title: 'Profil',
         tabBarIcon: ({focused}) => (
           <HomeNavigatorIcon name="user" focused={focused} />
-        ),
-      },
-    },
+        )
+      }
+    }
   },
   {
     tabBarOptions: {
-      activeTintColor: Colors.secondaryLight,
-    },
-  },
+      activeTintColor: Colors.secondaryLight
+    }
+  }
 );
 
 const TabNavigator = createAppContainer(TabNavigatorContent);

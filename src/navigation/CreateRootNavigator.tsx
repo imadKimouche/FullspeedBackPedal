@@ -10,19 +10,19 @@ export const CreateRootNavigator = (isLogged?: boolean) => {
       Login: {
         screen: Login,
         navigationOptions: {
-          header: () => null,
-        },
+          header: () => null
+        }
       },
       HomeNavigator: {
         screen: HomeNavigator,
         navigationOptions: {
-          header: () => null,
-        },
-      },
+          header: () => null
+        }
+      }
     },
     {
-      initialRouteName: isLogged ? 'HomeNavigator' : 'Login',
-    },
+      initialRouteName: isLogged ? 'HomeNavigator' : 'Login'
+    }
   );
   return createAppContainer(RootNavigatorContent);
 };

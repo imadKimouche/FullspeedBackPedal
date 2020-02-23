@@ -4,7 +4,7 @@ import {
   logout,
   start,
   UserInfoActionType,
-  UserInfo,
+  UserInfo
 } from '../actions/userActions';
 import {setAsyncItem, getAsyncItem} from '../../Utils/Utility';
 
@@ -38,13 +38,13 @@ const logoutReducer = (state: SliceState) => {
 
 const userReducer = createReducer(
   {
-    userInfo: {id: '', username: '', email: '', creation_date: '', token: ''},
+    userInfo: {id: '', username: '', email: '', creation_date: '', token: ''}
   } as SliceState,
   {
     [userInfo.type]: userInfoReducer,
     [logout.type]: logoutReducer,
-    [start.type]: startReducer,
-  },
+    [start.type]: startReducer
+  }
 );
 
 export default userReducer;

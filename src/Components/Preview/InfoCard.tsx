@@ -44,25 +44,25 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: Colors.white,
     borderRadius: 10,
-    maxWidth: SCREEN_WIDTH * 0.9,
+    maxWidth: SCREEN_WIDTH * 0.9
   },
   title: {
     color: Colors.secondaryLight,
     fontSize: 15,
-    padding: 5,
+    padding: 5
   },
   list: {
-    paddingLeft: 10,
+    paddingLeft: 10
   },
   line: {
     paddingBottom: 10,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   lineText: {
     marginLeft: 5,
-    paddingRight: 15,
-  },
+    paddingRight: 15
+  }
 });
 
 export default InfoCard;
