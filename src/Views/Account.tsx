@@ -12,6 +12,7 @@ import {Store, RootState} from '../store/configureStore';
 import {logout, UserInfo} from '../store/actions/userActions';
 import {connect} from 'react-redux';
 import FormInput from '../Components/FormInput';
+import {Images} from '../Utils/Images';
 
 interface IProps {
   navigation: NavigationScreenProp<any, any>;
@@ -31,7 +32,7 @@ class Account extends Component<IProps, IState> {
 
     this.state = {
       isVisible: false,
-      profilePicture: '',
+      profilePicture: Images.poro_1
     };
   }
 
@@ -53,7 +54,7 @@ class Account extends Component<IProps, IState> {
   _setProfilePicture = async (picture: any) => {
     this.setState({
       isVisible: false,
-      profilePicture: picture,
+      profilePicture: picture
     });
     try {
       await AsyncStorage.setItem('profilePicture', picture.toString());
@@ -72,20 +73,22 @@ class Account extends Component<IProps, IState> {
             this.setState({isVisible: false});
           }}
         />
-        <TouchableOpacity style={styles.profileLogo}>
-          <Image
-            style={styles.profilePicture}
-            resizeMode="center"
-            source={this.state.profilePicture}
-          />
-        </TouchableOpacity>
-        <Text
-          style={styles.clickableText}
-          onPress={() => {
-            this.setState({isVisible: true});
-          }}>
-          Update profile picture
-        </Text>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity style={styles.profileLogo}>
+            <Image
+              style={styles.profilePicture}
+              resizeMode="center"
+              source={this.state.profilePicture}
+            />
+          </TouchableOpacity>
+          <Text
+            style={styles.clickableText}
+            onPress={() => {
+              this.setState({isVisible: true});
+            }}>
+            Update profile picture
+          </Text>
+        </View>
         <View style={styles.info}>
           <FormInput
             editable={false}
@@ -114,7 +117,7 @@ class Account extends Component<IProps, IState> {
 
 const mapStateToProps = function(state: RootState) {
   return {
-    userInfo: state.userReducer.userInfo,
+    userInfo: state.userReducer.userInfo
   };
 };
 
@@ -124,7 +127,7 @@ export default ConnectAccount;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   profileLogo: {
     width: SCREEN_WIDTH * 0.3,
@@ -133,12 +136,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 35,
     justifyContent: 'center',
+    alignItems: 'center'
+  },
+  headerContainer: {
+    justifyContent: 'center',
     alignItems: 'center',
+    padding: 40,
+    backgroundColor: Colors.secondaryLight,
+    borderBottomWidth: 0.8,
+    borderBottomColor: Colors.black
   },
   profilePicture: {
     width: SCREEN_WIDTH * 0.3,
     height: SCREEN_WIDTH * 0.3,
-    borderRadius: (SCREEN_WIDTH * 0.3) / 2,
+    borderRadius: (SCREEN_WIDTH * 0.3) / 2
   },
   info: {
     marginTop: 25,
@@ -149,40 +160,40 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: SCREEN_WIDTH * 0.95,
     maxHeight: SCREEN_HEIGHT * 0.5,
-    padding: 10,
+    padding: 10
   },
   clickableText: {
     marginTop: 14,
-    color: Colors.secondaryLight,
+    color: Colors.white,
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 16
   },
   inactiveText: {
     color: 'grey',
     marginTop: 14,
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 16
   },
   label: {
     color: Colors.black,
     fontWeight: 'normal',
-    fontFamily: 'Montserrat-Light',
+    fontFamily: 'Montserrat-Light'
   },
   infoText: {
     color: Colors.secondaryTexta,
     marginTop: 40,
     marginLeft: 5,
-    fontSize: 12,
+    fontSize: 12
   },
   logoutButton: {
     backgroundColor: Colors.danger,
     alignSelf: 'center',
     width: 250,
     borderRadius: 250,
-    height: 45,
+    height: 45
   },
   logoutButtonText: {
     fontFamily: 'UbuntuBold',
-    fontSize: 13,
-  },
+    fontSize: 13
+  }
 });

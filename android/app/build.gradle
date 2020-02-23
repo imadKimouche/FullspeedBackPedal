@@ -128,7 +128,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.fullspeedbackpedal"
+        applicationId "com.whatbitme"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
