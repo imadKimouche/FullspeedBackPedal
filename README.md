@@ -36,3 +36,7 @@ Like `npm start`, but also attempts to open your app on a connected Android devi
 #### `npm run lint`
 
 This will start eslint script.
+
+# Icon credit
+
+Icons made by Freepik from www.flaticon.com
