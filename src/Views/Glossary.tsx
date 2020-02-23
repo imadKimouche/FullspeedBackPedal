@@ -1,25 +1,14 @@
 import React, {PureComponent} from 'react';
-<<<<<<< HEAD
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  FlatList,
-} from 'react-native';
-import { Icon } from 'react-native-elements';
-import { API, InsectType } from '../Utils/API';
-=======
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, FlatList} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {API, InsectType} from '../Utils/API';
->>>>>>> 3a97af89bea229a3b9b90694cbec334196a7b354
 import BugsCard from '../Components/BugsCard';
 import Colors from '../Utils/Colors';
 import * as Animatable from 'react-native-animatable';
 
 interface IState {
   isLoading: boolean;
+  page: "Cards" | "Details";
   insectList: InsectType[];
 }
 
@@ -27,6 +16,7 @@ export default class Glossary extends PureComponent<null, IState> {
   state: IState = {
     isLoading: true,
     insectList: [],
+    page: "Cards",
   };
 
   componentDidMount() {
@@ -55,30 +45,39 @@ export default class Glossary extends PureComponent<null, IState> {
   };
 
   onInsectClick = (index : number) => {
+    this.setState({page: "Details"});
     console.log("Click on" + index);
   }
 
   render() {
-    const { insectList } = this.state;
+    const { insectList, page } = this.state;
     return (
       <View style={styles.container}>
         <Animatable.View
-          animation="bounceIn"
-          duration={600}
-          style={styles.headerContainer}>
-          <Icon
-            color={Colors.primaryText}
-            name="bug"
-            type="font-awesome"
-            size={62}
-          />
-          <Text style={styles.heading}>Insectes</Text>
+            animation="fadeInDown" 
+            style={styles.headerContainer}>
+            <Animatable.View
+              animation="pulse" easing="ease-out" iterationCount="infinite" >
+              <Icon
+                color={Colors.primaryText}
+                name="bug"
+                type="font-awesome"
+                size={62}
+              />
+            </Animatable.View>
+          <Text  style={styles.heading}>Insectes</Text>
         </Animatable.View>
         <FlatList
           keyExtractor={(item : InsectType) => item.name}
           data={ insectList }
           renderItem={({item, index} : {item : InsectType, index: number}) => {
-            return <BugsCard picture={item.picture} title={item.name} index={index} onClick={this.onInsectClick} />;
+            return <BugsCard 
+              picture={item.picture}
+              title={item.name}
+              index={index}
+              onClick={this.onInsectClick}
+              animation={page === "Cards" ? "bounceInLeft" : "fadeOutLeft"}
+              duration={page === "Cards" ? 2000 : 700}/>;
           }}
         />
       </View>

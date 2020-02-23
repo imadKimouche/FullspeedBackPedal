@@ -9,16 +9,17 @@ interface IProps {
   picture: string;
   title: string;
   index: number;
+  animation: string;
+  duration?: number;
   onClick: (index: number) => void;
 }
 
-const BugsCard = (props: IProps) => {
-  const {picture, title, index, onClick} = props;
+const BugsCard = ({picture, title, index, onClick, animation, duration = 2000} : IProps) => {
   return (
     <TouchableNativeFeedback
       key={title}
       onPress={()=>{onClick(index)}} >
-      <Animatable.View key={title} animation="bounceInLeft" duration={2000} style={styles.container}>
+      <Animatable.View key={title}  delay={index * 200} animation={animation} duration={duration} style={styles.container}>
         <View style={styles.leftPart}>
           <View style={{marginLeft: 15}}>
             <Avatar rounded source={{uri: picture}} activeOpacity={0.7} />
