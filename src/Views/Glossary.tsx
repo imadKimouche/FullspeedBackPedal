@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     padding: 40,
     backgroundColor: Colors.secondaryLight,
     borderBottomWidth: 0.8,
-    borderBottomColor: Colors.pink,
+    borderBottomColor: Colors.black,
   },
   heading: {
     color: 'white',

@@ -38,10 +38,10 @@ interface IState {
 }
 
 const SWAGG_SENTENCES: string[] = [
-  "Got stung ? It will be fine.",
+  'Got stung ? It will be fine.',
   "Stay calm, if you are going to die in the next 10 min it's already too late anyway.",
-  "At least mosquito like you.",
-  "Pain is temporary...in some cases",
+  'At least mosquito like you.',
+  'Pain is temporary...in some cases',
 ];
 
 class Login extends PureComponent<null, IState> {
@@ -181,14 +181,22 @@ class Login extends PureComponent<null, IState> {
     } = this.state;
 
     return (
-      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.container}>
-        <KeyboardAvoidingView behavior="position" contentContainerStyle={styles.formContainer}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.container}>
+        <KeyboardAvoidingView
+          behavior="position"
+          contentContainerStyle={styles.formContainer}>
           <View style={styles.headerContent}>
             <Text style={styles.signUpText}>
               {register ? 'Sign up' : 'Login'}
             </Text>
             <Text style={styles.swaggSentence}>
-              { SWAGG_SENTENCES[Math.floor(Math.random() * SWAGG_SENTENCES.length)] }
+              {
+                SWAGG_SENTENCES[
+                  Math.floor(Math.random() * SWAGG_SENTENCES.length)
+                ]
+              }
             </Text>
             <Text style={styles.apiError}>{apiResponse}</Text>
           </View>
@@ -201,7 +209,9 @@ class Login extends PureComponent<null, IState> {
               placeholder="Email"
               keyboardType="email-address"
               returnKeyType="next"
-              errorMessage={ emailValid ? null : 'Please enter a valid email address' }
+              errorMessage={
+                emailValid ? null : 'Please enter a valid email address'
+              }
               onSubmitEditing={() => {
                 this.validateEmail();
                 if (this.passwordInput.current != null)
@@ -216,7 +226,9 @@ class Login extends PureComponent<null, IState> {
               placeholder="Password"
               secureTextEntry
               returnKeyType="next"
-              errorMessage={ passwordValid ? null : 'Please enter at least 8 characters' }
+              errorMessage={
+                passwordValid ? null : 'Please enter at least 8 characters'
+              }
               onSubmitEditing={() => {
                 this.validatePassword();
                 if (this.confirmationPasswordInput.current != null)
@@ -225,10 +237,14 @@ class Login extends PureComponent<null, IState> {
             />
             {register === true && (
               <FormInput
-                refInput={(input: any) => (this.confirmationPasswordInput = input) }
+                refInput={(input: any) =>
+                  (this.confirmationPasswordInput = input)
+                }
                 icon="lock"
                 value={confirmationPassword}
-                onChangeText={(confirmationPassword: string) => this.setState({confirmationPassword}) }
+                onChangeText={(confirmationPassword: string) =>
+                  this.setState({confirmationPassword})
+                }
                 placeholder="Confirm Password"
                 secureTextEntry
                 errorMessage={
@@ -255,7 +271,7 @@ class Login extends PureComponent<null, IState> {
         </KeyboardAvoidingView>
         <View style={styles.loginHereContainer}>
           <Text style={styles.alreadyAccountText}>
-            {register ? 'Already have an account.' : "Don't have an account ?"}
+            {register ? 'Already have an account?' : "Don't have an account?"}
           </Text>
           <Button
             title={register ? 'Login here' : 'Sing up here'}
@@ -285,7 +301,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 20,
     paddingTop: 20,
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -300,7 +316,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   signUpText: {
-    color: Colors.white,
+    color: Colors.secondaryLight,
     fontSize: 28,
     fontFamily: 'UbuntuLight',
   },
@@ -324,6 +340,7 @@ const styles = StyleSheet.create({
     width: 250,
     borderRadius: 250,
     height: 45,
+    backgroundColor: Colors.secondaryLight,
   },
   loginHereContainer: {
     flexDirection: 'row',
@@ -332,7 +349,7 @@ const styles = StyleSheet.create({
   alreadyAccountText: {
     fontFamily: 'UbuntuLightItalic',
     fontSize: 12,
-    color: Colors.primaryText,
+    color: Colors.black,
   },
   loginHereText: {
     color: Colors.link,

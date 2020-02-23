@@ -83,7 +83,7 @@ export default class ImagePreview extends React.Component<IProps, IState> {
             iterationCount="infinite"
             name="md-bug"
             size={23}
-            color={this.state.loading ? Colors.pink : Colors.black}
+            color={Colors.secondaryLight}
           />
         </TouchableOpacity>
         {this.state.loading && (

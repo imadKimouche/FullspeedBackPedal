@@ -11,7 +11,12 @@ const FormInput = (props: any) => {
       ref={refInput}
       inputContainerStyle={styles.inputContainer}
       leftIcon={
-        <Icon name={icon} type={'simple-line-icon'} color={Colors.secondaryText} size={18} />
+        <Icon
+          name={icon}
+          type={'simple-line-icon'}
+          color={Colors.secondaryText}
+          size={18}
+        />
       }
       inputStyle={styles.inputStyle}
       autoFocus={false}
@@ -37,7 +42,7 @@ const styles = StyleSheet.create({
   inputStyle: {
     flex: 1,
     marginLeft: 10,
-    color: Colors.white,
+    color: Colors.black,
     fontFamily: 'UbuntuLight',
     fontSize: 16,
   },

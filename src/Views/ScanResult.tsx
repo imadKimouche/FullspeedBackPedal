@@ -132,7 +132,7 @@ class ScanResult extends Component<IProps, IState> {
       if (response.status == 200) {
         this.props.navigation.navigate('Scanner');
       } else if (response.status == 400) {
-        Alert.alert('Oops!', 'Image could not be added');
+        Alert.alert('Oops!', 'Picture could not be added');
       }
     });
   };
@@ -174,7 +174,7 @@ class ScanResult extends Component<IProps, IState> {
             {
               left: SCREEN_WIDTH / 2 - 15,
               backgroundColor:
-                this.state.valueX > -300 ? Colors.pink : Colors.white,
+                this.state.valueX > -300 ? Colors.secondaryLight : Colors.white,
             },
           ]}
         />
@@ -185,7 +185,7 @@ class ScanResult extends Component<IProps, IState> {
               left: SCREEN_WIDTH / 2 - 5,
               backgroundColor:
                 this.state.valueX < -300 && this.state.valueX > -600
-                  ? Colors.pink
+                  ? Colors.secondaryLight
                   : Colors.white,
             },
           ]}
@@ -196,7 +196,7 @@ class ScanResult extends Component<IProps, IState> {
             {
               left: SCREEN_WIDTH / 2 + 5,
               backgroundColor:
-                this.state.valueX < -600 ? Colors.pink : Colors.white,
+                this.state.valueX < -600 ? Colors.secondaryLight : Colors.white,
             },
           ]}
         />
@@ -242,14 +242,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: Colors.pink,
+    borderColor: Colors.secondaryLight,
   },
   image: {
     width: SCREEN_WIDTH * 0.2,
   },
   lists: {
     flex: 1,
-    marginTop: 10,
+    marginTop: 50,
     marginRight: 10,
     marginLeft: 10,
     borderRadius: 10,
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     width: 6,
     borderRadius: 3,
     borderWidth: 1,
-    borderColor: Colors.pink,
+    borderColor: Colors.secondaryLight,
     position: 'absolute',
     bottom: 15,
   },
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.14,
     height: SCREEN_WIDTH * 0.14,
     borderRadius: (SCREEN_WIDTH * 0.14) / 2,
-    backgroundColor: Colors.pink,
+    backgroundColor: Colors.secondaryLight,
     bottom: 15,
     justifyContent: 'center',
     alignItems: 'center',

@@ -139,7 +139,11 @@ class Scanner extends Component<IProps, IState> {
                     )
                     .catch(err => this._handleCaptureError(err));
                 }}>
-                <Icon name="md-camera" size={23} />
+                <Icon
+                  name="md-camera"
+                  size={23}
+                  color={Colors.secondaryLight}
+                />
               </TouchableOpacity>
             </RNCamera>
           </View>

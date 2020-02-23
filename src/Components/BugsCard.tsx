@@ -32,16 +32,13 @@ const BugsCard = (props: IProps) => {
             {title.charAt(0).toUpperCase() + title.slice(1)}
           </Text>
         </View>
-        <View style={styles.rightPart}>
-          {/* <Text style={styles.rightPartText}>Learn more</Text> */}
-          <View style={styles.rightPartButton}>
-            <Icon
-              name="angle-right"
-              type="font-awesome"
-              color={Colors.pink}
-              size={20}
-            />
-          </View>
+        <View style={styles.rightPartButton}>
+          <Icon
+            name="angle-right"
+            type="font-awesome"
+            color={Colors.pink}
+            size={20}
+          />
         </View>
       </Animatable.View>
     </TouchableNativeFeedback>
@@ -73,12 +70,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  rightPart: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
   rightPartButton: {
     backgroundColor: Colors.white,
     height: 28,
@@ -87,11 +78,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 10,
-  },
-  rightPartText: {
-    fontFamily: 'regular',
-    fontSize: 15,
-    marginLeft: 10,
-    color: Colors.pink,
   },
 });

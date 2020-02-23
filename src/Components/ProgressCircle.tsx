@@ -11,7 +11,7 @@ const ProgressCircle = ({animating}: IProps) => {
     <ActivityIndicator
       style={styles.container}
       size={80}
-      color={Colors.pink}
+      color={Colors.secondaryLight}
       animating={animating}
     />
   );
