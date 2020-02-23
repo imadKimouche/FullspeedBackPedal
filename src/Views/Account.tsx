@@ -32,7 +32,7 @@ class Account extends Component<IProps, IState> {
 
     this.state = {
       isVisible: false,
-      profilePicture: ''
+      profilePicture: Images.poro_1
     };
   }
 
@@ -45,8 +45,6 @@ class Account extends Component<IProps, IState> {
       const profilePicture = await AsyncStorage.getItem('profilePicture');
       if (profilePicture !== null) {
         this.setState({profilePicture});
-      } else {
-        this.setState({profilePicture: Images.poro_1});
       }
     } catch (error) {
       console.log(error);
