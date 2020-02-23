@@ -4,7 +4,7 @@ import {
   StyleSheet,
   ScrollView,
   Text,
-  View,
+  View
 } from 'react-native';
 import {connect} from 'react-redux';
 import {Input, Button} from 'react-native-elements';
@@ -15,9 +15,8 @@ import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   IS_DEBUG,
-  getSavedEmail,
   setAsyncItem,
-  getAsyncItem,
+  getAsyncItem
 } from '../Utils/Utility';
 import {API, LoginType} from '../Utils/API';
 import Colors from '../Utils/Colors';
@@ -27,6 +26,7 @@ interface IState {
   register: boolean;
   isLoading: boolean;
   apiResponse: string;
+  username: string;
   email: string;
   password: string;
   confirmationPassword: string;
@@ -40,7 +40,7 @@ const SWAGG_SENTENCES: string[] = [
   'Got stung ? It will be fine.',
   "Stay calm, if you are going to die in the next 10 min it's already too late anyway.",
   'At least mosquito like you.',
-  'Pain is temporary...in some cases',
+  'Pain is temporary...in some cases'
 ];
 
 class Login extends PureComponent<null, IState> {
@@ -53,13 +53,14 @@ class Login extends PureComponent<null, IState> {
     register: true,
     isLoading: false,
     apiResponse: '',
+    username: '',
     email: '',
     password: '',
     confirmationPassword: '',
     emailValid: true,
     passwordValid: true,
     usernameValid: true,
-    confirmationPasswordValid: true,
+    confirmationPasswordValid: true
   };
 
   constructor(props: any) {
@@ -83,20 +84,21 @@ class Login extends PureComponent<null, IState> {
   }
 
   register = () => {
-    const {email, password} = this.state;
+    const {username, email, password} = this.state;
     if (
       IS_DEBUG ||
-      (this.validateEmail() &&
+      (this.validateUsername() &&
+        this.validateEmail() &&
         this.validatePassword() &&
         this.validateConfirmationPassword())
     ) {
       this.setState({isLoading: true});
-      API.post(`${API.url_register}`, {email, password})
+      API.post(`${API.url_register}`, {username, email, password})
         .then((response: Response) => this._apiResponse(response))
         .catch(err => {
           this.setState({
             isLoading: false,
-            apiResponse: "Can't connect to API",
+            apiResponse: "Can't connect to API"
           });
           return err;
         });
@@ -113,11 +115,18 @@ class Login extends PureComponent<null, IState> {
         .catch(err => {
           this.setState({
             isLoading: false,
-            apiResponse: "Can't connect to API",
+            apiResponse: "Can't connect to API"
           });
           return err;
         });
     }
+  };
+
+  validateUsername = () => {
+    const {username} = this.state;
+    const usernameValid = username.length > 0;
+    this.setState({usernameValid});
+    return usernameValid;
   };
 
   _apiResponse = (response: Response) => {
@@ -135,14 +144,14 @@ class Login extends PureComponent<null, IState> {
               username: responseJSON.username,
               email: responseJSON.email,
               creation_date: responseJSON.creation_date,
-              token: responseJSON.token,
-            }),
+              token: responseJSON.token
+            })
           );
           //this.setState({isLoading: false});
         } else {
           this.setState({
             isLoading: false,
-            apiResponse: responseJSON.message ? responseJSON.message : '',
+            apiResponse: responseJSON.message ? responseJSON.message : ''
           });
         }
       })
@@ -185,7 +194,7 @@ class Login extends PureComponent<null, IState> {
       passwordValid,
       confirmationPasswordValid,
       username,
-      usernameValid,
+      usernameValid
     } = this.state;
 
     return (
@@ -209,6 +218,24 @@ class Login extends PureComponent<null, IState> {
             <Text style={styles.apiError}>{apiResponse}</Text>
           </View>
           <View style={{width: '80%', alignItems: 'center', height: '30%'}}>
+            {register && (
+              <FormInput
+                refInput={(input: any) => (this.usernameInput = input)}
+                icon="user"
+                value={username}
+                onChangeText={(username: string) => this.setState({username})}
+                placeholder="Username"
+                returnKeyType="next"
+                errorMessage={
+                  usernameValid ? null : "Your username can't be blank"
+                }
+                onSubmitEditing={() => {
+                  this.validateUsername();
+                  if (this.emailInput.current != null)
+                    this.emailInput.current.focus();
+                }}
+              />
+            )}
             <FormInput
               refInput={(input: any) => (this.emailInput = input)}
               icon="envelope"
@@ -243,7 +270,7 @@ class Login extends PureComponent<null, IState> {
                   this.confirmationPasswordInput.current.focus();
               }}
             />
-            {register === true && (
+            {register && (
               <FormInput
                 refInput={(input: any) =>
                   (this.confirmationPasswordInput = input)
@@ -296,7 +323,7 @@ class Login extends PureComponent<null, IState> {
 
 const mapStateToProps = function(state: RootState) {
   return {
-    isLoading: state.userReducer.userInfo.token === '' ? false : true,
+    isLoading: state.userReducer.userInfo.token === '' ? false : true
   };
 };
 
@@ -311,51 +338,51 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     backgroundColor: Colors.white,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   formContainer: {
     flex: 1,
     justifyContent: 'space-evenly',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   headerContent: {
     width: SCREEN_WIDTH * 0.8,
     height: SCREEN_HEIGHT * 0.2,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   signUpText: {
     color: Colors.secondaryLight,
-    fontSize: 28,
+    fontSize: 28
   },
   swaggSentence: {
     color: Colors.secondaryText,
     fontSize: 14,
     marginTop: 30,
-    textAlign: 'justify',
+    textAlign: 'justify'
   },
   apiError: {
     color: Colors.danger,
-    fontSize: 14,
+    fontSize: 14
   },
   signUpButtonText: {
-    fontSize: 13,
+    fontSize: 13
   },
   signUpButton: {
     width: 250,
     borderRadius: 250,
     height: 45,
-    backgroundColor: Colors.secondaryLight,
+    backgroundColor: Colors.secondaryLight
   },
   loginHereContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   alreadyAccountText: {
     fontSize: 12,
-    color: Colors.black,
+    color: Colors.black
   },
   loginHereText: {
     color: Colors.link,
-    fontSize: 12,
-  },
+    fontSize: 12
+  }
 });
