@@ -103,7 +103,7 @@ class Glossary extends PureComponent<IProps, IState> {
         },
       });
       this.props.navigation.dispatch(pushAction);
-    }, 700);
+    }, 350);
   }
 
   render() {
@@ -136,7 +136,7 @@ class Glossary extends PureComponent<IProps, IState> {
                 index={index}
                 onClick={this.onInsectClick}
                 animation={showCard && this.props.navigation.state.routeName === "Glossary" ? "bounceInLeft" : "fadeOutLeft"}
-                duration={showCard && this.props.navigation.state.routeName === "Glossary" ? 2000 : 700}/>;
+                duration={showCard && this.props.navigation.state.routeName === "Glossary" ? 1600 : 450}/>;
             }}
           />
         </View>
