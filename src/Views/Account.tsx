@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Input} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {NavigationScreenProp} from 'react-navigation';
 
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../Utils/Utility';
@@ -11,6 +11,7 @@ import {API} from '../Utils/API';
 import {Store, RootState} from '../store/configureStore';
 import {logout, UserInfo} from '../store/actions/userActions';
 import {connect} from 'react-redux';
+import FormInput from '../Components/FormInput';
 
 interface IProps {
   navigation: NavigationScreenProp<any, any>;
@@ -86,25 +87,25 @@ class Account extends Component<IProps, IState> {
           Update profile picture
         </Text>
         <View style={styles.info}>
-          <Input
-            label="Username"
-            labelStyle={styles.label}
-            value={this.props.userInfo.username}
-          />
-          <Input
-            label="Email"
-            labelStyle={styles.label}
-            value={this.props.userInfo.email}
-          />
+          <FormInput
+            editable={false}
+            icon="user"
+            placeholder={this.props.userInfo.username}></FormInput>
+          <FormInput
+            editable={false}
+            icon="envelope"
+            placeholder={this.props.userInfo.email}></FormInput>
         </View>
-        <Text
-          style={[styles.clickableText, {color: Colors.link}]}
+        <Button
+          buttonStyle={styles.logoutButton}
+          titleStyle={styles.logoutButtonText}
           onPress={() => {
             Store.dispatch(logout(0));
             this.props.navigation.navigate('Login');
-          }}>
-          Log out
-        </Text>
+          }}
+          title="
+          Log out"
+        />
         <Text style={styles.infoText}>v {this.versionNumber}</Text>
       </View>
     );
@@ -172,5 +173,16 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginLeft: 5,
     fontSize: 12,
+  },
+  logoutButton: {
+    backgroundColor: Colors.danger,
+    alignSelf: 'center',
+    width: 250,
+    borderRadius: 250,
+    height: 45,
+  },
+  logoutButtonText: {
+    fontFamily: 'UbuntuBold',
+    fontSize: 13,
   },
 });

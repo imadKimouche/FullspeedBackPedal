@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   },
   lists: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
     borderRadius: 10,
