@@ -20,13 +20,12 @@ export const API = {
       return err;
     });
   },
-  get: (url: string, content: {}) => {
-    return fetch(
-      url + (Object.keys(content).length ? '?' + objectToParam(content) : ''),
-      {
-        method: 'GET',
-      },
-    ).catch(err => {
+  get: (url: string, content: null | {}) => {
+    var finalUrl : string = url;
+    if (content != null && Object.keys(content).length) {
+        url += '?' + objectToParam(content);
+    }
+    return fetch( finalUrl, { method: 'GET', }, ).catch(err => {
       console.log('ERROR:' + err);
       return err;
     });
@@ -52,3 +51,10 @@ export interface InsectType {
   threatlevel: number;
   picture: string;
 }
+
+export interface InsectType {
+    id: number;
+    name: string;
+    threatlevel: number;
+    picture: string;
+  }

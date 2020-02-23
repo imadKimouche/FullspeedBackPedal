@@ -1,4 +1,4 @@
-import React, {Component, ComponentType} from 'react';
+import React, {PureComponent, ComponentType} from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {Input, Button} from 'react-native-elements';
+import {Input, Button, withTheme} from 'react-native-elements';
 import {Store, RootState} from '../store/configureStore';
 import {userInfo} from '../store/actions/userActions';
 import FormInput from '../Components/FormInput';
@@ -38,13 +38,13 @@ interface IState {
 }
 
 const SWAGG_SENTENCES: string[] = [
-  'Got stung ? It will be fine.',
+  "Got stung ? It will be fine.",
   "Stay calm, if you are going to die in the next 10 min it's already too late anyway.",
-  'At least mosquito like you.',
-  'Pain is temporary...in some cases',
+  "At least mosquito like you.",
+  "Pain is temporary...in some cases",
 ];
 
-class Login extends Component<null, IState> {
+class Login extends PureComponent<null, IState> {
   private usernameInput: React.RefObject<Input>;
   private emailInput: React.RefObject<Input>;
   private passwordInput: React.RefObject<Input>;
@@ -133,7 +133,7 @@ class Login extends Component<null, IState> {
             token: responseJSON.token,
           }),
         );
-        this.setState({isLoading: false});
+        //this.setState({isLoading: false});
       } else {
         this.setState({
           isLoading: false,
@@ -181,23 +181,17 @@ class Login extends Component<null, IState> {
     } = this.state;
 
     return (
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={styles.container}>
-        <KeyboardAvoidingView
-          behavior="position"
-          contentContainerStyle={styles.formContainer}>
-          <Text style={styles.signUpText}>
-            {register ? 'Sign up' : 'Login'}
-          </Text>
-          <Text style={styles.swaggSentence}>
-            {
-              SWAGG_SENTENCES[
-                Math.floor(Math.random() * SWAGG_SENTENCES.length)
-              ]
-            }
-          </Text>
-          <Text style={styles.apiError}>{apiResponse}</Text>
+      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.container}>
+        <KeyboardAvoidingView behavior="position" contentContainerStyle={styles.formContainer}>
+          <View style={styles.headerContent}>
+            <Text style={styles.signUpText}>
+              {register ? 'Sign up' : 'Login'}
+            </Text>
+            <Text style={styles.swaggSentence}>
+              { SWAGG_SENTENCES[Math.floor(Math.random() * SWAGG_SENTENCES.length)] }
+            </Text>
+            <Text style={styles.apiError}>{apiResponse}</Text>
+          </View>
           <View style={{width: '80%', alignItems: 'center', height: '30%'}}>
             <FormInput
               refInput={(input: any) => (this.emailInput = input)}
@@ -207,9 +201,7 @@ class Login extends Component<null, IState> {
               placeholder="Email"
               keyboardType="email-address"
               returnKeyType="next"
-              errorMessage={
-                emailValid ? null : 'Please enter a valid email address'
-              }
+              errorMessage={ emailValid ? null : 'Please enter a valid email address' }
               onSubmitEditing={() => {
                 this.validateEmail();
                 if (this.passwordInput.current != null)
@@ -224,9 +216,7 @@ class Login extends Component<null, IState> {
               placeholder="Password"
               secureTextEntry
               returnKeyType="next"
-              errorMessage={
-                passwordValid ? null : 'Please enter at least 8 characters'
-              }
+              errorMessage={ passwordValid ? null : 'Please enter at least 8 characters' }
               onSubmitEditing={() => {
                 this.validatePassword();
                 if (this.confirmationPasswordInput.current != null)
@@ -235,14 +225,10 @@ class Login extends Component<null, IState> {
             />
             {register === true && (
               <FormInput
-                refInput={(input: any) =>
-                  (this.confirmationPasswordInput = input)
-                }
+                refInput={(input: any) => (this.confirmationPasswordInput = input) }
                 icon="lock"
                 value={confirmationPassword}
-                onChangeText={(confirmationPassword: string) =>
-                  this.setState({confirmationPassword})
-                }
+                onChangeText={(confirmationPassword: string) => this.setState({confirmationPassword}) }
                 placeholder="Confirm Password"
                 secureTextEntry
                 errorMessage={
@@ -261,7 +247,6 @@ class Login extends Component<null, IState> {
           <Button
             loading={isLoading}
             title={register ? 'SIGNUP' : 'LOGIN'}
-            containerStyle={{flex: -1}}
             buttonStyle={styles.signUpButton}
             titleStyle={styles.signUpButtonText}
             onPress={register ? this.register : this.login}
@@ -291,7 +276,7 @@ const mapStateToProps = function(state: RootState) {
   };
 };
 
-const ConnectLogin = connect(mapStateToProps)(Login as ComponentType);
+const ConnectLogin = connect(mapStateToProps, null)(Login as ComponentType);
 
 export default ConnectLogin;
 
@@ -300,9 +285,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 20,
     paddingTop: 20,
-    backgroundColor: Colors.signUp,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+    backgroundColor: Colors.secondary,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -311,22 +294,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
+  headerContent: {
+    width: SCREEN_WIDTH * 0.8,
+    height: SCREEN_HEIGHT * 0.2,
+    alignItems: 'center',
+  },
   signUpText: {
-    color: 'white',
+    color: Colors.white,
     fontSize: 28,
     fontFamily: 'UbuntuLight',
   },
   swaggSentence: {
-    color: Colors.swagSentence,
+    color: Colors.secondaryText,
     fontFamily: 'UbuntuBold',
     fontSize: 14,
-    maxWidth: SCREEN_WIDTH * 0.7,
+    marginTop: 30,
+    textAlign: 'justify',
   },
   apiError: {
-    color: 'crimson',
+    color: Colors.danger,
     fontFamily: 'UbuntuBold',
     fontSize: 14,
-    maxWidth: SCREEN_WIDTH * 0.7,
   },
   signUpButtonText: {
     fontFamily: 'UbuntuBold',
@@ -334,7 +322,7 @@ const styles = StyleSheet.create({
   },
   signUpButton: {
     width: 250,
-    borderRadius: Math.round(45 / 2),
+    borderRadius: 250,
     height: 45,
   },
   loginHereContainer: {
@@ -344,10 +332,10 @@ const styles = StyleSheet.create({
   alreadyAccountText: {
     fontFamily: 'UbuntuLightItalic',
     fontSize: 12,
-    color: 'white',
+    color: Colors.primaryText,
   },
   loginHereText: {
-    color: '#FF9800',
+    color: Colors.link,
     fontFamily: 'UbuntuLightItalic',
     fontSize: 12,
   },
