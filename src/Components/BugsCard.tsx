@@ -1,9 +1,10 @@
 import React from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import {Text, View, TouchableNativeFeedback} from 'react-native';
 import {Avatar, Icon} from 'react-native-elements';
 import {StyleSheet} from 'react-native';
 import Colors from '../Utils/Colors';
 import * as Animatable from 'react-native-animatable';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface IProps {
   picture: string;
@@ -51,7 +52,6 @@ const BugsCard = ({
           />
         </View>
       </Animatable.View>
-      TouchableOpacity
     </TouchableOpacity>
   );
 };
