@@ -1,4 +1,14 @@
 {
   "name": "WhatBitMe",
-  "displayName": "What Bit Me"
+  "displayName": "What Bit Me",
+  "expo": {
+    "sdkVersion": "36.0.0",
+    "name": "WhatBitMe",
+    "slug": "whatbitme",
+    "version": "0.0.1",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  }
 }
