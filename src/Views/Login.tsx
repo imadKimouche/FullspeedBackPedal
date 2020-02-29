@@ -20,7 +20,6 @@ import {
 } from '../Utils/Utility';
 import {API, LoginType} from '../Utils/API';
 import Colors from '../Utils/Colors';
-import AsyncStorage from '@react-native-community/async-storage';
 
 interface IState {
   register: boolean;
@@ -221,7 +220,7 @@ class Login extends PureComponent<null, IState> {
             {register && (
               <FormInput
                 refInput={(input: any) => (this.usernameInput = input)}
-                icon="user"
+                icon="person-outline"
                 value={username}
                 onChangeText={(username: string) => this.setState({username})}
                 placeholder="Username"
@@ -238,7 +237,7 @@ class Login extends PureComponent<null, IState> {
             )}
             <FormInput
               refInput={(input: any) => (this.emailInput = input)}
-              icon="envelope"
+              icon="mail-outline"
               value={email}
               onChangeText={(email: string) => this.setState({email})}
               placeholder="Email"

@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  AsyncStorage
+} from 'react-native';
+// import AsyncStorage from '@react-native-community/async-storage';
 import {Button} from 'react-native-elements';
 import {NavigationScreenProp} from 'react-navigation';
 
@@ -92,11 +99,11 @@ class Account extends Component<IProps, IState> {
         <View style={styles.info}>
           <FormInput
             editable={false}
-            icon="user"
+            icon="person-outline"
             placeholder={this.props.userInfo.username}></FormInput>
           <FormInput
             editable={false}
-            icon="envelope"
+            icon="mail-outline"
             placeholder={this.props.userInfo.email}></FormInput>
         </View>
         <Button
@@ -176,8 +183,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: Colors.black,
-    fontWeight: 'normal',
-    fontFamily: 'Montserrat-Light'
+    fontWeight: 'normal'
   },
   infoText: {
     color: Colors.secondaryTexta,

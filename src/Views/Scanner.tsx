@@ -4,10 +4,11 @@ import {
   Platform,
   StyleSheet,
   TouchableOpacity,
-  Alert
+  Alert,
+  Button
 } from 'react-native';
-import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
-import {RNCamera} from 'react-native-camera';
+import {Camera} from 'expo-camera';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import {withNavigationFocus, NavigationScreenProp} from 'react-navigation';
 
@@ -41,40 +42,14 @@ class Scanner extends Component<IProps, IState> {
     this.camera = null;
 
     this.state = {
-      isCameraAvailable: true,
+      isCameraAvailable: false,
       isTakingPicture: false
     };
   }
 
-  componentDidMount() {
-    const cameraPermission =
-      Platform.OS === 'android'
-        ? PERMISSIONS.ANDROID.CAMERA
-        : PERMISSIONS.IOS.CAMERA;
-
-    check(cameraPermission)
-      .then((result: string) => {
-        switch (result) {
-          case RESULTS.DENIED:
-            request(cameraPermission).then((res: string) => {
-              if (res === RESULTS.GRANTED) {
-                this.setState({isCameraAvailable: true});
-              } else if (res === RESULTS.DENIED) {
-                this.setState({isCameraAvailable: false});
-              }
-            });
-            break;
-          case RESULTS.GRANTED:
-            this.setState({isCameraAvailable: true});
-            break;
-          case RESULTS.BLOCKED:
-            this.setState({isCameraAvailable: false});
-            break;
-        }
-      })
-      .catch((error: string) => {
-        console.log(error);
-      });
+  async componentDidMount() {
+    const {status} = await Camera.requestPermissionsAsync();
+    this.setState({isCameraAvailable: status === 'granted'});
   }
 
   _closeModal = () => {
@@ -123,29 +98,24 @@ class Scanner extends Component<IProps, IState> {
         />
         {this.state.isCameraAvailable && isFocused && (
           <View style={styles.cameraContainer}>
-            <RNCamera
+            <Camera
               ref={ref => {
                 this.camera = ref;
               }}
-              style={styles.preview}
-              captureAudio={false}>
+              style={styles.preview}>
               <ProgressCircle animating={this.state.isTakingPicture} />
-              <TouchableOpacity
-                style={styles.snapButton}
-                onPress={() => {
-                  this._takePicture()
-                    .then((res: IResult) =>
-                      this._handleCapturedImage(res.uri, res.base64)
-                    )
-                    .catch(err => this._handleCaptureError(err));
-                }}>
-                <Icon
-                  name="md-camera"
-                  size={23}
-                  color={Colors.secondaryLight}
-                />
-              </TouchableOpacity>
-            </RNCamera>
+            </Camera>
+            <TouchableOpacity
+              style={styles.snapButton}
+              onPress={() => {
+                this._takePicture()
+                  .then((res: IResult) =>
+                    this._handleCapturedImage(res.uri, res.base64)
+                  )
+                  .catch(err => this._handleCaptureError(err));
+              }}>
+              <Icon name="md-camera" size={23} color={Colors.secondaryLight} />
+            </TouchableOpacity>
           </View>
         )}
       </View>
@@ -177,7 +147,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     bottom: 10,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    alignSelf: 'center'
   }
 });
 

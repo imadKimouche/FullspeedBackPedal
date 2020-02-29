@@ -1,5 +1,4 @@
-import {Dimensions} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import {Dimensions, AsyncStorage} from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;

@@ -9,6 +9,8 @@
     "platforms": [
       "ios",
       "android"
-    ]
+    ],
+    "description": "Don't get bit, it's too dangerous!",
+    "githubUrl": "https://github.com/imadKimouche/FullspeedBackPedal"
   }
 }

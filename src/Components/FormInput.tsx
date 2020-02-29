@@ -13,7 +13,7 @@ const FormInput = (props: any) => {
       leftIcon={
         <Icon
           name={icon}
-          type={'simple-line-icon'}
+          type={'IonIcons'}
           color={Colors.secondaryText}
           size={18}
         />
